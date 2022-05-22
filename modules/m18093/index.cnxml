@@ -1,0 +1,20 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Open Education Cup: Module Exemplars</title>
+  <metadata><md:content-id>undefined</md:content-id><md:title/><md:uuid>316b3b84-142e-436b-b184-01587eef432d</md:uuid>
+</metadata>
+  <content>
+    <para id="id11691863">The following pages provide a few examples of content that is available in the Connexions repository. These modules were chosen in order to illustrate specific features of the site and the ways authors are able to leverage CNXML in order to create powerful yet flexible educational content.  We encourage you to review these modules and use them as a starting point for ideas as you prepare your contest entries.</para>
+    <note id="idm12063504">Due to space limitations, not all of the exemplars listed below have been included in this collection.  You can view all of these modules online using the URLs provided.</note>
+    <para id="id12408023">Selected exemplars include:</para>
+    
+
+
+<para id="exemplar1"><title>1. Task Parallelism (by Jeff Meisel)</title>An effective use of a straightforward text and image presentation style.  View this module online at <link document="m15580">http://cnx.org/content/m15580/latest/</link>.</para>
+<para id="exemplar2"><title>2. Analysis of Shared Memory Multiprocessors (by Bart Sinclair)</title>A discussion taking advantage of CNXML lists, examples, tables, and MathML support.  View this module online at <link document="m10846">http://cnx.org/content/m10846/latest/</link>.</para>
+<para id="exemplar3"><title>3. Two Basic Rules of Probability (by Barbara Illowsky and Susan Dean)</title>A module featuring the use of CNXML sections, examples, exercises, and glossary terms.  View this module online at <link document="m16847">http://cnx.org/content/m16847/latest/</link>.</para>
+<para id="exemplar4"><title>4. Half Steps and Whole Steps (by Catherine Schmidt-Jones)</title>An example of non-technical content in Connexions making use of images, audio media, and examples.  View this module online at <link document="m10866">http://cnx.org/content/m10866/latest/</link>. </para>
+<para id="exemplar5"><title>5. Fourier Analysis in Complex Spaces (by Michael Haag and Justin Romberg)</title>An example making effective use of sections, subsections, examples, notes, rules (theorems), and subfigures.  View this module online at <link document="m10784">http://cnx.org/content/m10784/latest/</link>.</para>
+<para id="exemplar6"><title>6. Análisis de Fourier en Espacios Complejos</title>A derivation of the previous module (translated by Fara Meza and Erika Jackson) illustrating how derived copies of modules can be used by other Connexions users to repurpose content, reach new audiences, and facilitate an open exchange of ideas.  View this module online at <link document="m12848">http://cnx.org/content/m12848/latest/</link>. </para><para id="element-438"><title>7. Elementary Algebra: Solving Linear Equations in One Variable</title>An example of a module taking full advantage of several CNXML features.  This module features multimedia elements as well as advanced MathML display features.  View this module online at <link document="18033">http://cnx.org/content/m18033/latest/</link>.</para>
+
+  </content>
+</document>

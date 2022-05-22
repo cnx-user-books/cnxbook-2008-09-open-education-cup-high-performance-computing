@@ -1,0 +1,37 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Open Education Cup: What is OER?</title>
+  <metadata><md:content-id>undefined</md:content-id><md:title/><md:uuid>1334d09d-a67b-4a55-b99c-cedb337fd44a</md:uuid>
+</metadata>
+  <content>
+    <section id="id6943664">
+      <title>What are Open Education Resources (OER)?</title>
+      <para id="id6943670">The <link url="http://www.hewlett.org/">William and Flora Hewlett Foundation</link> provides the following definition for OER:</para>
+      <para id="id6943684"><quote display="block" url="http://www.hewlett.org/Programs/Education/OER" id="idp234480">OER are teaching, learning and research resources that reside in the public domain or have been released under an intellectual property license that permits their free use or re-purposing by others. Open educational resources include full courses, course materials, modules, textbooks, streaming videos, tests, software, and any other tools, materials or techniques used to support access to knowledge.</quote>
+      </para>
+      <para id="id6943695">We believe that opening educational materials will not only reduce the cost of education for schools, districts, and students by providing free access to textbooks and other commonly used resources, but also help to improve the quality and relevance of these materials by encouraging contributions from all community members. Rather than limiting ideas those approved by a small group of publishers, OER allows educational communities to pool individual resources from around the world to bring together the best ideas. </para>
+      <para id="id6943712">This model encourages author participation by making it easier to publish and update content, allowing them to share their ideas with the world without navigating the many barriers associated with traditional publication models. Educators can use OER as a way of accessing the most up-to-date, relevant information available, and customizing that content for the specific needs of their students. Students can take advantage of the zero-dollar price tag to gain access to educational resources regardless of income, making a high-quality education more affordable and available for everyone.</para>
+    </section>
+    <section id="id6943731">
+      <title>Why Connexions?</title>
+      
+      <para id="id6943763">The <link url="http://OpenEducationCup.org/">Open Education Cup competition</link> is using <link url="http://cnx.org/">Connexions</link> as the framework for submitting and publishing all contest entries. Modules submitted to Connexions are made available to the public under the <link url="http://creativecommons.org/licenses/by/2.0/">Creative Commons attribution license</link>, allowing students, educators, and researchers to read, extend, or repurpose the content for any purpose provided they maintain proper attribution.</para>
+      <para id="id6943805">There are several platforms that provide access to OER content; however, there are a number of specific factors that make Connexions an ideal choice for this type of competition, specifically:</para>
+      <para id="id6943813"><title>License</title>Many sites place restrictions on the way content can be used. By releasing all content under the Creative Commons attribution (CC-by) license, users are able to use and build upon content in any way they see fit, providing much-needed flexibility when crafting personalized learning materials.</para>
+      <para id="id6943826"><title>Structure</title>Connexions content is stored as a series of modules that can be used independently or as part of a larger collection (such as a textbook, journal, or online course). By breaking down ideas into smaller pieces, users are able to mix and match works from other authors to create customized learning materials using the best ideas available from the content commons.</para>
+      <para id="id6943841"><title>Delivery</title>Users can access Connexions content in one of three ways: as a free online e-book, a free downloadable PDF, or as a low-cost print-on-demand publication orderable from the collection home page. Content can also be freely copied and made available through other channels, such as organizational websites or other OER distributers, provided that proper attribution is maintained.</para><list id="element-206" list-type="bulleted"><item>For more information about the Connexions project, please visit <link url="http://cnx.org/aboutus/">http://cnx.org/aboutus/</link>.</item>
+<item>For questions help using Connexions, please visit <link url="http://cnx.org/help/">http://cnx.org/help/</link>, or contact Jonathan Emmons at <link url="mailto:jonathan.emmons@cnx.org">jonathan.emmons@cnx.org</link>.</item></list>
+    </section>
+    <section id="id6943859">
+      <title>Other Approaches to OER</title>
+      <para id="id6943865">The following modules provide some additional information regarding OER you may find interesting or useful:</para>
+      <list list-type="bulleted" id="id6943871">
+        <item>
+          <link document="m14466">OER Introduction (by Judy Baker)</link>
+        </item>
+        <item>
+          <link document="m15226">What are Open Textbooks? (by ISKME)</link>
+        </item>
+      </list>
+    </section>
+  </content>
+</document>

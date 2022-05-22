@@ -1,0 +1,2785 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Analysis of Shared Memory Multiprocessors</title>
+  <metadata><md:content-id>undefined</md:content-id><md:title/><md:uuid>3a3649d4-2a99-4fd3-bab1-191496583221</md:uuid>
+</metadata>
+
+
+  <content>
+    <para id="p1">
+      A shared-memory multiprocessor consists of a number of
+      processors accessing one or more shared memory modules.  The
+      processors can be physically connected to the memory modules in
+      a variety of ways, but logically every processor is connected to
+      every module.
+    </para>
+
+    <para id="p2">
+      We can use any of several metrics to evaluate the performance of
+      a multiprocessor system.  In order to keep the model and its
+      implementation manageable, we will focus on the degree of
+      parallelism among the memory modules; that is, we are interested
+      in determining the average number of memory modules that are
+      being accessed simultaneously.  The model is as follows:
+      <list id="list1" list-type="enumerated">
+	<item>
+	  The system has <m:math><m:ci>p</m:ci></m:math> processors
+	  and <m:math><m:ci>m</m:ci></m:math> memory modules.  Each
+	  processor can send requests for access to any memory module.
+	</item>
+	<item>
+	  Memory module accesses are synchronized; two modules
+	  servicing access requests at the same time start and
+	  complete their accesses together.  Memory accesses always
+	  take one time unit (one memory cycle).
+	</item>
+	<item>
+	  Processors are infinitely fast.  When a processor's
+	  access request has been serviced by a memory module, the
+	  processor immediately generates a new request.
+	</item>
+	<item>
+	  Processors send requests with equal probability to each
+	  module.  The module chosen for a new request is independent
+	  of the module chosen for any other request.
+	</item>
+	<item>
+	  A processor may have only one outstanding request at a time.
+	</item>
+	<item>
+	  A memory module may service only one request at a time.  If
+	  more than one request is queued at a memory module at the
+	  beginning of a memory cycle, the module selects a request to
+	  service at random.  All requests not serviced during the
+	  cycle remain queued at the module at the beginning of the
+	  next cycle.
+	</item>
+      </list>
+
+      Let 
+      <m:math>
+	<m:apply>
+	  <m:mean/>
+	  <m:ci>B</m:ci>
+	</m:apply>
+      </m:math> be the average number of memory modules busy servicing
+      an access request during a memory cycle.  Regardless of the
+      number of processors and memory modules, we can implement the
+      model as a discrete-time Markov chain in which the information
+      contained in a state includes the number of memory modules that
+      have requests waiting at the beginning of a memory cycle.
+      Hence, a state also describes the number of modules that will be
+      busy during the next memory cycle.  We can find 
+      <m:math>
+	<m:apply>
+	  <m:mean/>
+	  <m:ci>B</m:ci>
+	</m:apply>
+      </m:math> by solving for
+      the steady state solution of the Markov chain and computing
+      <m:math display="block">
+	<m:apply>
+	  <m:eq/>
+	  <m:apply>
+	    <m:mean/>
+	    <m:ci>B</m:ci>
+	  </m:apply>
+	  <m:apply>
+	    <m:sum/>
+	    <m:domainofapplication>
+	      <m:mtext>all states i</m:mtext>
+	    </m:domainofapplication>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:csymbol definitionURL="http://cnx.rice.edu/cd/cnxmath.ocd#probability"/>
+		<m:mtext>state i</m:mtext>
+	      </m:apply>
+	      <m:mtext>number of busy modules in state i</m:mtext>
+	    </m:apply>
+	  </m:apply>
+	</m:apply>
+      </m:math>
+    </para>
+
+    <para id="p3">
+      We know that the Markov chain has a steady state solution (is
+      ergodic) since the chain will be finite and at least one state
+      will have a self-loop.  The chain is finite because the number
+      of ways that processors' access requests can be distributed
+      among the modules is finite.  Any state that represents at least
+      one request at each memory module will have a self-loop, since
+      any processor that has its request satisfied during a cycle
+      beginning in that state has a non-zero probability of sending
+      its next access request to the same module.
+    </para>
+
+    <para id="p4">
+      As usual, we proceed in three steps.  We first determine, for a
+      given <m:math><m:ci>p</m:ci></m:math> and
+      <m:math><m:ci>m</m:ci></m:math>, the set of all states in the
+      Markov chain.  Then, we compute the probabilities for all
+      allowed single step state transitions.  Finally, we solve the
+      Markov chain for the steady state probabilities.
+    </para>
+
+    <para id="p5">
+      It is not possible in general to implement the model using
+      states that only tells us how many modules are going to be busy
+      during the next cycle.  Consider, for example, a model for a
+      system with 4 processors and 2 memory modules.  A state that
+      only tells us that two modules will be busy during the next
+      cycle does not include enough information to tell us the
+      probabilities of being in the various states at the beginning of
+      the next cycle.  This is because two modules will be busy during
+      a cycle that starts with requests distributed among the modules
+      in either of two ways:
+      <list id="list2" list-type="enumerated">
+	<item id="item1">
+	  three requests at one module, one request at the other
+	  module
+	</item>
+	<item id="item2">
+	  two requests at one module, two requests at the other module
+	</item>
+      </list>
+    </para>
+
+    <para id="p6">
+      If we start a cycle with the four requests distributed as in
+      (1), at the end of the cycle we have two requests left at one
+      module, no requests at the other module, and two processors
+      ready to make new requests.  The next cycle may start with the
+      four requests distributed as in (1) or (2), or with four
+      requests at a single module.  If we start a cycle as in (2),
+      both modules have a request waiting at the end of the cycle.
+      The next cycle cannot begin with all four requests at a single
+      module.
+    </para>
+
+    <para id="p7">
+      We must use a definition of state that allows us to determine
+      how the access requests that must wait during a cycle are
+      distributed among the modules at the end of the cycle, in
+      addition to telling us how many modules will be busy during the
+      cycle.  (1) and (2) above illustrate exactly how this is done.
+      Each state specifies how the p requests are distributed among
+      the modules, without regard to which module is which.  It is
+      unimportant in (1) to know which module has three requests and
+      which has two, since the modules and processors are identical.
+    </para>
+
+    <para id="p8">
+      With this general definition of state, computing the state
+      transition probabilities can be divided into two parts.  The
+      first is simple: if 
+      <m:math>
+	<m:apply>
+	  <m:leq/>
+	  <m:ci>r</m:ci>
+	  <m:ci>p</m:ci>
+	</m:apply>
+      </m:math> requests are serviced during a memory cycle, the
+      <m:math><m:ci>r</m:ci></m:math> processors that generate new
+      requests for the next memory cycle choose any particular set of
+      modules with probability 
+      <m:math>
+	<m:apply>
+	  <m:power/>
+	  <m:apply>
+	    <m:divide/>
+	    <m:cn>1</m:cn>
+	    <m:ci>m</m:ci>
+	  </m:apply>
+	  <m:ci>r</m:ci>
+	</m:apply>
+      </m:math>.  They may all choose to send their new requests to
+      the same module, or each may select a different module from the
+      others, or some may choose the same module while others select
+      different modules.  The end result will be some distribution of
+      <m:math><m:ci>p</m:ci></m:math> requests among the
+      <m:math><m:ci>m</m:ci></m:math> modules at the beginning of the
+      next cycle, with each possible distribution represented by a
+      different state.
+    </para>
+
+    <para id="p9">
+      The second part of computing state transition probabilities is
+      to count the number of ways in which processors may choose to
+      make new requests that will result in the same distribution of
+      requests at the beginning of the next cycle (the same next
+      state).  Consider the following example with 4 processors and 2
+      memory modules, as above.  Suppose the model begins one cycle
+      with two requests at each module.  At the end of the cycle, each
+      module has one request remaining.  Two processors will make new
+      requests before the start of the next cycle.  If they select the
+      same module, the next state has three requests at one module and
+      one request at the other.  There are two ways that this can
+      happen, since there are two modules that they can select and
+      each of these modules has one request remaining from the
+      previous cycle.  
+    </para>
+
+    <para id="p10">
+      To put the two parts together, we compute the single step state
+      transition probability for the transition from state A to state
+      B by multiplying the probability of choosing any set of modules
+      following the cycle beginning in state A by the number of ways
+      we can choose a set of modules that takes us to state B.  For
+      the example, the probability of making the transition from the
+      state with two requests at each module to the state with three
+      requests at one module and one at the other is 
+      <m:math>
+	<m:apply>
+	  <m:eq/>
+	  <m:apply>
+	    <m:times/>
+	    <m:apply>
+	      <m:power/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	    <m:cn>2</m:cn>
+	  </m:apply>
+	  <m:cn type="rational">1<m:sep/>2</m:cn>
+	</m:apply>
+      </m:math>.
+    </para>
+
+    <para id="p11">
+      Generally, the process of computing state transition
+      probabilities is more difficult that this example would
+      indicate, even though the process just described always works.
+      The difficulty will always come in the second part - counting
+      the number of ways of choosing where new requests go that take
+      the model to the same next state.  For this reason, we recommend
+      that you follow the above procedure to compute
+      <emphasis>all</emphasis> single step transition probabilities
+      for each state.  Because the single step transition
+      probabilities for a given state (including a transition back to
+      the same state) must sum to 1, this will provide a useful check
+      on whether or not you counted all the possibilities.
+    </para>
+
+    <para id="p12">
+      We illustrate the complete procedure with several examples.  Let
+      <m:math>
+	<m:apply>
+	  <m:ci type="fn">C</m:ci>
+	  <m:ci>n</m:ci>
+	  <m:ci>r</m:ci>
+	</m:apply>
+      </m:math>
+      be the number of combinations of <m:math><m:ci>n</m:ci></m:math>
+      objects taken <m:math><m:ci>r</m:ci></m:math> at a time, and 
+     
+      <m:math>
+	<m:apply>
+	  <m:ci type="fn">P</m:ci>
+	  <m:ci>n</m:ci>
+	  <m:ci>r</m:ci>
+	</m:apply>
+      </m:math> be the number of permutations of
+      <m:math><m:ci>n</m:ci></m:math> objects taken
+      <m:math><m:ci>r</m:ci></m:math> at a time.  In the
+      first two examples, we find an expression for the average memory
+      module concurrency as a function of the number of memory modules
+      for a fixed number (2 or 3) of processors.
+    </para>
+
+    <example id="ex1">
+      <title>2 processors, m≥2 modules</title>
+
+      <table frame="all" id="table1" summary="">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>State</entry>
+	      <entry/>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>1</entry>
+	      <entry>2 requests at the same module</entry>
+	    </row>
+	    <row>
+	      <entry>2</entry>
+	      <entry>1 request at each of two modules</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+	     
+      <para id="p13">
+	First, find the single step transition probabilities.  At the
+	risk of overkill for this particularly simple case, we
+	explicitly write each probability as the product of the
+	probability that the new requests go to a particular set of
+	modules (
+	<m:math>
+	  <m:apply>
+	    <m:divide/>
+	    <m:cn>1</m:cn>
+	    <m:ci>m</m:ci>
+	  </m:apply>
+	</m:math>
+	if the cycle started in state 1 and 
+	<m:math>
+	  <m:apply>
+	    <m:divide/>
+	    <m:cn>1</m:cn>
+	    <m:apply>
+	      <m:power/>
+	      <m:ci>m</m:ci>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math> if the cycle started in state 2) and the number of
+      such sets that result in the specified next state.
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>1</m:cn>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:ci>m</m:ci>
+	      </m:apply>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>1</m:cn>
+	      <m:ci>m</m:ci>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>1</m:cn>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:ci>m</m:ci>
+	      </m:apply>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:ci>m</m:ci>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>2</m:cn>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:apply>
+		  <m:power/>
+		  <m:ci>m</m:ci>
+		  <m:cn>2</m:cn>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>1</m:cn>
+	      <m:ci>m</m:ci>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>2</m:cn>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:apply>
+		  <m:power/>
+		  <m:ci>m</m:ci>
+		  <m:cn>2</m:cn>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:ci>m</m:ci>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:ci>m</m:ci>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	This may actually seem to be double overkill.  Since we know
+	that the <m:math><m:ci type="matrix">P</m:ci></m:math> matrix
+	is singular, we only need one of the Chapman-Kolmogorov
+	equations, and hence only two of the single step transition
+	probabilities - either
+	<m:math>
+	  <m:apply>
+	    <m:selector/>
+	    <m:ci type="matrix">p</m:ci>
+	    <m:cn>1</m:cn>
+	    <m:cn>1</m:cn>
+	  </m:apply>
+	</m:math> and 
+	<m:math>
+	  <m:apply>
+	    <m:selector/>
+	    <m:ci type="matrix">p</m:ci>
+	    <m:cn>2</m:cn>
+	    <m:cn>1</m:cn>
+	  </m:apply>
+	</m:math> or 
+	<m:math>
+	  <m:apply>
+	    <m:selector/>
+	    <m:ci type="matrix">p</m:ci>
+	    <m:cn>1</m:cn>
+	    <m:cn>2</m:cn>
+	  </m:apply>
+	</m:math> and 
+	<m:math>
+	  <m:apply>
+	    <m:selector/>
+	    <m:ci type="matrix">p</m:ci>
+	    <m:cn>2</m:cn>
+	    <m:cn>2</m:cn>
+	  </m:apply>
+	</m:math>.  The other independent equation is the
+	normalization equation.  However, as mentioned above, if you
+	compute all of the single-step state transition probabilities,
+	you can add the probabilities for all transitions from each
+	state as a check on having gotten them correct.
+      </para>
+
+      <para id="p14">
+	Continuing with the example, choose the first
+	Chapman-Kolmogorov equation.  Then
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="vector">π</m:ci>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci>p</m:ci>
+		  <m:cn>1</m:cn>
+		  <m:cn>1</m:cn>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci>p</m:ci>
+		  <m:cn>2</m:cn>
+		  <m:cn>1</m:cn>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="vector">π</m:ci>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:selector/>
+		<m:ci type="vector">π</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:implies/>
+	    <m:apply>
+	      <m:eq/>
+	      <m:apply>
+		<m:plus/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>2</m:cn>
+		</m:apply>
+	      </m:apply>
+	      <m:cn>1</m:cn>
+	      <m:apply>
+		<m:times/>
+		<m:ci>m</m:ci>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>1</m:cn>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:and/>
+	      <m:apply>
+		<m:eq/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:eq/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:divide/>
+		  <m:apply>
+		    <m:minus/>
+		    <m:ci>m</m:ci>
+		    <m:cn>1</m:cn>
+		  </m:apply>
+		  <m:ci>m</m:ci>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+      The average memory module concurrency or parallelism is
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:mean/>
+	      <m:ci>B</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:times/>
+		<m:cn>1</m:cn>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:cn>2</m:cn>
+		<m:apply>
+		  <m:divide/>
+		  <m:apply>
+		    <m:minus/>
+		    <m:ci>m</m:ci>
+		    <m:cn>1</m:cn>
+		  </m:apply>
+		  <m:ci>m</m:ci>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:apply>
+		<m:minus/>
+		<m:apply>
+		  <m:times/>
+		  <m:cn>2</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:ci>m</m:ci>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+      </para>
+    </example>
+
+    <example id="ex2">
+      <title>3 processors, m≥3 modules</title>
+      <table frame="all" id="table2" summary="">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>State</entry>
+	      <entry/>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>1</entry>
+	      <entry>3 requests at one module</entry>
+	    </row>
+	    <row>
+	      <entry>2</entry>
+	      <entry>
+		2 requests at one module, 1 request at another module
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>3</entry>
+	      <entry>1 request at each of three modules</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+
+      <para id="p15">
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>1</m:cn>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:ci>m</m:ci>
+	      </m:apply>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>1</m:cn>
+	      <m:ci>m</m:ci>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>1</m:cn>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:ci>m</m:ci>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:apply>
+		  <m:minus/>
+		  <m:ci>m</m:ci>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:ci>m</m:ci>
+	      </m:apply>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>1</m:cn>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:cn>0</m:cn>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>2</m:cn>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:power/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:ci>m</m:ci>
+	      </m:apply>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>2</m:cn>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:plus/>
+		<m:apply>
+		  <m:ci type="fn">C</m:ci>
+		  <m:apply>
+		    <m:minus/>
+		    <m:ci>m</m:ci>
+		    <m:cn>1</m:cn>
+		  </m:apply>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:times/>
+		  <m:apply>
+		    <m:ci type="fn">C</m:ci>
+		    <m:apply>
+		      <m:minus/>
+		      <m:ci>m</m:ci>
+		      <m:cn>1</m:cn>
+		    </m:apply>
+		    <m:cn>1</m:cn>
+		  </m:apply>
+		  <m:apply>
+		    <m:ci type="fn">C</m:ci>
+		    <m:cn>2</m:cn>
+		    <m:cn>1</m:cn>
+		  </m:apply>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:cn>3</m:cn>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>2</m:cn>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:apply>
+		  <m:minus/>
+		  <m:ci>m</m:ci>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>2</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>3</m:cn>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:ci>m</m:ci>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>3</m:cn>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:ci>m</m:ci>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>3</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>2</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:cn>3</m:cn>
+	      <m:ci>m</m:ci>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>3</m:cn>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:ci>m</m:ci>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>3</m:cn>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:ci>m</m:ci>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:minus/>
+		<m:ci>m</m:ci>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+
+	
+	<m:math>
+	  <m:apply>
+	    <m:selector/>
+	    <m:ci type="matrix">p</m:ci>
+	    <m:cn>2</m:cn>
+	    <m:cn>2</m:cn>
+	  </m:apply>
+	</m:math> merits an explanation.  Two memory modules are busy
+	during a cycle that starts in state 2.  At the end of the
+	cycle, the two processors that had their memory access
+	requests serviced will make new requests.  The first term
+	inside the square brackets corresponds to the two new requests
+	going to the same memory module, one of the 
+	<m:math>
+	  <m:apply>
+	    <m:minus/>
+	    <m:ci>m</m:ci>
+	    <m:cn>1</m:cn>
+	  </m:apply>
+	</m:math> modules without a request at the end of the cycle.
+	There are
+	<m:math>
+	  <m:apply>
+	    <m:ci type="fn">C</m:ci>
+	    <m:apply>
+	      <m:minus/>
+	      <m:ci>m</m:ci>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:cn>1</m:cn>
+	  </m:apply>
+	</m:math> ways to select this module.  The second term
+	corresponds to one of the new requests going to the module
+	that still has a request pending, and the other new request
+	going to one of the other 
+	<m:math>
+	  <m:apply>
+	    <m:minus/>
+	    <m:ci>m</m:ci>
+	    <m:cn>1</m:cn>
+	  </m:apply>
+	</m:math> modules.  There are 
+	<m:math>
+	  <m:apply>
+	    <m:ci type="fn">C</m:ci>
+	    <m:apply>
+	      <m:minus/>
+	      <m:ci>m</m:ci>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:cn>1</m:cn>
+	  </m:apply>
+	</m:math> ways to choose the module without a pending request,
+	and there are two ways to order the two new requests so that
+	one goes to the module that already has a request and the
+	other goes to the module that doesn't.
+      </para>
+
+      <para id="p16">
+	We will make use of the Chapman-Kolmogorov equations for 
+	<m:math>
+	  <m:apply>
+	    <m:selector/>
+	    <m:ci type="vector">π</m:ci>
+	    <m:cn>1</m:cn>
+	  </m:apply>
+	</m:math> and 
+	<m:math>
+	  <m:apply>
+	    <m:selector/>
+	    <m:ci type="vector">π</m:ci>
+	    <m:cn>3</m:cn>
+	  </m:apply>
+	</m:math>, plus the normalization equation.
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="vector">π</m:ci>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:ci>m</m:ci>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:apply>
+		    <m:power/>
+		    <m:ci>m</m:ci>
+		    <m:cn>2</m:cn>
+		  </m:apply>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>3</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:apply>
+		    <m:power/>
+		    <m:ci>m</m:ci>
+		    <m:cn>2</m:cn>
+		  </m:apply>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="vector">π</m:ci>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:divide/>
+		  <m:apply>
+		    <m:times/>
+		    <m:apply>
+		      <m:minus/>
+		      <m:ci>m</m:ci>
+		      <m:cn>1</m:cn>
+		    </m:apply>
+		    <m:apply>
+		      <m:minus/>
+		      <m:ci>m</m:ci>
+		      <m:cn>2</m:cn>
+		    </m:apply>
+		  </m:apply>
+		  <m:apply>
+		    <m:power/>
+		    <m:ci>m</m:ci>
+		    <m:cn>2</m:cn>
+		  </m:apply>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>3</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:divide/>
+		  <m:apply>
+		    <m:times/>
+		    <m:apply>
+		      <m:minus/>
+		      <m:ci>m</m:ci>
+		      <m:cn>1</m:cn>
+		    </m:apply>
+		    <m:apply>
+		      <m:minus/>
+		      <m:ci>m</m:ci>
+		      <m:cn>2</m:cn>
+		    </m:apply>
+		  </m:apply>
+		  <m:apply>
+		    <m:power/>
+		    <m:ci>m</m:ci>
+		    <m:cn>2</m:cn>
+		  </m:apply>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:cn>1</m:cn>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:selector/>
+		<m:ci type="vector">π</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:selector/>
+		<m:ci type="vector">π</m:ci>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:selector/>
+		<m:ci type="vector">π</m:ci>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	Solving these three equations gives
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="vector">π</m:ci>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>1</m:cn>
+	      <m:apply>
+		<m:plus/>
+		<m:apply>
+		  <m:minus/>
+		  <m:apply>
+		    <m:power/>
+		    <m:ci>m</m:ci>
+		    <m:cn>2</m:cn>
+		  </m:apply>
+		  <m:ci>m</m:ci>
+		</m:apply>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="vector">π</m:ci>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:minus/>
+		  <m:apply>
+		    <m:times/>
+		    <m:cn>3</m:cn>
+		    <m:ci>m</m:ci>
+		  </m:apply>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:minus/>
+		  <m:ci>m</m:ci>
+		  <m:cn>1</m:cn>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:ci>m</m:ci>
+		<m:apply>
+		  <m:plus/>
+		  <m:apply>
+		    <m:minus/>
+		    <m:apply>
+		      <m:power/>
+		      <m:ci>m</m:ci>
+		      <m:cn>2</m:cn>
+		    </m:apply>
+		    <m:ci>m</m:ci>
+		  </m:apply>
+		  <m:cn>1</m:cn>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="vector">π</m:ci>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:power/>
+		  <m:apply>
+		    <m:minus/>
+		    <m:ci>m</m:ci>
+		    <m:cn>1</m:cn>
+		  </m:apply>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:minus/>
+		  <m:ci>m</m:ci>
+		  <m:cn>2</m:cn>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:ci>m</m:ci>
+		<m:apply>
+		  <m:plus/>
+		  <m:apply>
+		    <m:minus/>
+		    <m:apply>
+		      <m:power/>
+		      <m:ci>m</m:ci>
+		      <m:cn>2</m:cn>
+		    </m:apply>
+		    <m:ci>m</m:ci>
+		  </m:apply>
+		  <m:cn>1</m:cn>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:mean/>
+	      <m:ci>B</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:times/>
+		<m:cn>1</m:cn>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:apply>
+		    <m:plus/>
+		    <m:apply>
+		      <m:minus/>
+		      <m:apply>
+			<m:power/>
+			<m:ci>m</m:ci>
+			<m:cn>2</m:cn>
+		      </m:apply>
+		      <m:ci>m</m:ci>
+		    </m:apply>
+		    <m:cn>1</m:cn>
+		  </m:apply>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:cn>2</m:cn>
+		<m:apply>
+		  <m:divide/>
+		  <m:apply>
+		    <m:times/>
+		    <m:apply>
+		      <m:minus/>
+		      <m:apply>
+			<m:times/>
+			<m:cn>3</m:cn>
+			<m:ci>m</m:ci>
+		      </m:apply>
+		      <m:cn>2</m:cn>
+		    </m:apply>
+		    <m:apply>
+		      <m:minus/>
+		      <m:ci>m</m:ci>
+		      <m:cn>1</m:cn>
+		    </m:apply>
+		  </m:apply>
+		  <m:apply>
+		    <m:times/>
+		    <m:ci>m</m:ci>
+		    <m:apply>
+		      <m:plus/>
+		      <m:apply>
+			<m:minus/>
+			<m:apply>
+			  <m:power/>
+			  <m:ci>m</m:ci>
+			  <m:cn>2</m:cn>
+			</m:apply>
+			<m:ci>m</m:ci>
+		      </m:apply>
+		      <m:cn>1</m:cn>
+		    </m:apply>
+		  </m:apply>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:cn>3</m:cn>
+		<m:apply>
+		  <m:divide/>
+		  <m:apply>
+		    <m:times/>
+		    <m:apply>
+		      <m:power/>
+		      <m:apply>
+			<m:minus/>
+			<m:ci>m</m:ci>
+			<m:cn>1</m:cn>
+		      </m:apply>
+		      <m:cn>2</m:cn>
+		    </m:apply>
+		    <m:apply>
+		      <m:minus/>
+		      <m:ci>m</m:ci>
+		      <m:cn>2</m:cn>
+		    </m:apply>
+		  </m:apply>
+		  <m:apply>
+		    <m:times/>
+		    <m:ci>m</m:ci>
+		    <m:apply>
+		      <m:plus/>
+		      <m:apply>
+			<m:minus/>
+			<m:apply>
+			  <m:power/>
+			  <m:ci>m</m:ci>
+			  <m:cn>2</m:cn>
+			</m:apply>
+			<m:ci>m</m:ci>
+		      </m:apply>
+		      <m:cn>1</m:cn>
+		    </m:apply>
+		  </m:apply>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+
+	    <m:apply>
+	      <m:divide/>
+	      <m:apply>
+		<m:plus/>
+		<m:apply>
+		  <m:minus/>
+		  <m:apply>
+		    <m:times/>
+		    <m:cn>3</m:cn>
+		    <m:apply>
+		      <m:power/>
+		      <m:ci>m</m:ci>
+		      <m:cn>3</m:cn>
+		    </m:apply>
+		  </m:apply>
+		  <m:apply>
+		    <m:times/>
+		    <m:cn>6</m:cn>
+		    <m:apply>
+		      <m:power/>
+		      <m:ci>m</m:ci>
+		      <m:cn>2</m:cn>
+		    </m:apply>
+		  </m:apply>
+		</m:apply>
+		<m:apply>
+		  <m:minus/>
+		  <m:apply>
+		    <m:times/>
+		    <m:cn>6</m:cn>
+		    <m:ci>m</m:ci>
+		  </m:apply>
+		  <m:cn>2</m:cn>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:ci>m</m:ci>
+		<m:apply>
+		  <m:plus/>
+		  <m:apply>
+		    <m:minus/>
+		    <m:apply>
+		      <m:power/>
+		      <m:ci>m</m:ci>
+		      <m:cn>2</m:cn>
+		    </m:apply>
+		    <m:ci>m</m:ci>
+		  </m:apply>
+		  <m:cn>1</m:cn>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+      </para>
+    </example>
+
+    <example id="ex3">
+      <title>4 processors, 4 modules</title>
+      <table frame="all" id="table3" summary="">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>State</entry>
+	      <entry/>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>1</entry>
+	      <entry>all four requests are at one module</entry>
+	    </row>
+	    <row>
+	      <entry>2a</entry>
+	      <entry>
+		three requests are at one module and one request is at
+		another module
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>2b</entry>
+	      <entry>
+		two requests are at one module and two requests are at
+		another module
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>3</entry>
+	      <entry>
+		two requests are at one module and one request is at
+		each of two other modules
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>4</entry>
+	      <entry>one request is at each of four modules</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+
+      <para id="p17">
+	We've chosen the state names to make explicit the number of
+	memory modules busy in each state.  The state transition
+	probabilities are
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>1</m:cn>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>1</m:cn>
+	      <m:cn>4</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>1</m:cn>
+	      <m:ci>2a</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>3</m:cn>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>3</m:cn>
+	      <m:cn>4</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>1</m:cn>
+	      <m:ci>2b</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>1</m:cn>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>1</m:cn>
+	      <m:cn>4</m:cn>
+	    </m:apply>
+	    <m:cn>0</m:cn>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:ci>2a</m:ci>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:power/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	      <m:cn>2</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:ci>2a</m:ci>
+	      <m:ci>2a</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>3</m:cn>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>2</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>6</m:cn>
+	      <m:cn>16</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:ci>2a</m:ci>
+	      <m:ci>2b</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>3</m:cn>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>3</m:cn>
+	      <m:cn>16</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:ci>2a</m:ci>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>3</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>2</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>6</m:cn>
+	      <m:cn>16</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:ci>2a</m:ci>
+	      <m:cn>4</m:cn>
+	    </m:apply>
+	    <m:cn>0</m:cn>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:ci>2b</m:ci>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:cn>0</m:cn>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:ci>2b</m:ci>
+	      <m:ci>2a</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>2</m:cn>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>2</m:cn>
+	      <m:cn>16</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:ci>2b</m:ci>
+	      <m:ci>2b</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>2</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>2</m:cn>
+	      <m:cn>16</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:ci>2b</m:ci>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:power/>
+		  <m:apply>
+		    <m:divide/>
+		    <m:cn>1</m:cn>
+		    <m:cn>4</m:cn>
+		  </m:apply>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">C</m:ci>
+		  <m:cn>2</m:cn>
+		  <m:cn>1</m:cn>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:power/>
+		  <m:apply>
+		    <m:divide/>
+		    <m:cn>1</m:cn>
+		    <m:cn>4</m:cn>
+		  </m:apply>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">C</m:ci>
+		  <m:cn>2</m:cn>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">C</m:ci>
+		  <m:cn>2</m:cn>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">P</m:ci>
+		  <m:cn>2</m:cn>
+		  <m:cn>2</m:cn>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>10</m:cn>
+	      <m:cn>16</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:ci>2b</m:ci>
+	      <m:cn>4</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>2</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>2</m:cn>
+	      <m:cn>16</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>3</m:cn>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:power/>
+	      <m:apply>
+		<m:divide/>
+		<m:cn>1</m:cn>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>1</m:cn>
+	      <m:cn>64</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>3</m:cn>
+	      <m:ci>2a</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:power/>
+		  <m:apply>
+		    <m:divide/>
+		    <m:cn>1</m:cn>
+		    <m:cn>4</m:cn>
+		  </m:apply>
+		  <m:cn>3</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">C</m:ci>
+		  <m:cn>3</m:cn>
+		  <m:cn>1</m:cn>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:power/>
+		  <m:apply>
+		    <m:divide/>
+		    <m:cn>1</m:cn>
+		    <m:cn>4</m:cn>
+		  </m:apply>
+		  <m:cn>3</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">C</m:ci>
+		  <m:cn>3</m:cn>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">C</m:ci>
+		  <m:cn>3</m:cn>
+		  <m:cn>2</m:cn>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>12</m:cn>
+	      <m:cn>64</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>3</m:cn>
+	      <m:ci>2b</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>3</m:cn>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>3</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>9</m:cn>
+	      <m:cn>64</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>3</m:cn>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:power/>
+		  <m:apply>
+		    <m:divide/>
+		    <m:cn>1</m:cn>
+		    <m:cn>4</m:cn>
+		  </m:apply>
+		  <m:cn>3</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">C</m:ci>
+		  <m:cn>3</m:cn>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">P</m:ci>
+		  <m:cn>3</m:cn>
+		  <m:cn>3</m:cn>
+		</m:apply>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:power/>
+		  <m:apply>
+		    <m:divide/>
+		    <m:cn>1</m:cn>
+		    <m:cn>4</m:cn>
+		  </m:apply>
+		  <m:cn>3</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">C</m:ci>
+		  <m:cn>3</m:cn>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">C</m:ci>
+		  <m:cn>3</m:cn>
+		  <m:cn>2</m:cn>
+		</m:apply>
+		<m:apply>
+		  <m:ci type="fn">P</m:ci>
+		  <m:cn>2</m:cn>
+		  <m:cn>2</m:cn>
+		</m:apply>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>36</m:cn>
+	      <m:cn>64</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>3</m:cn>
+	      <m:cn>4</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>3</m:cn>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>6</m:cn>
+	      <m:cn>64</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>4</m:cn>
+	      <m:cn>1</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>4</m:cn>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>4</m:cn>
+	      <m:cn>256</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>4</m:cn>
+	      <m:ci>2a</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>4</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>4</m:cn>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>2</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>48</m:cn>
+	      <m:cn>256</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>4</m:cn>
+	      <m:ci>2b</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>4</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>4</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>36</m:cn>
+	      <m:cn>256</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>4</m:cn>
+	      <m:cn>3</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>4</m:cn>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>3</m:cn>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">C</m:ci>
+		<m:cn>4</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>2</m:cn>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>144</m:cn>
+	      <m:cn>256</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:selector/>
+	      <m:ci type="matrix">p</m:ci>
+	      <m:cn>4</m:cn>
+	      <m:cn>4</m:cn>
+	    </m:apply>
+	    <m:apply>
+	      <m:times/>
+	      <m:apply>
+		<m:power/>
+		<m:apply>
+		  <m:divide/>
+		  <m:cn>1</m:cn>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:ci type="fn">P</m:ci>
+		<m:cn>4</m:cn>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:apply>
+	      <m:divide/>
+	      <m:cn>24</m:cn>
+	      <m:cn>256</m:cn>
+	    </m:apply>
+	  </m:apply>
+	</m:math>
+
+
+      Combining all of these probabilities into the single-step
+      transition probability matrix:
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:ci type="matrix">P</m:ci>
+	    <m:matrix>
+	      <m:matrixrow>
+		<m:cn type="rational">1<m:sep/>4</m:cn>
+		<m:cn type="rational">3<m:sep/>4</m:cn>
+		<m:cn>0</m:cn>
+		<m:cn>0</m:cn>
+		<m:cn>0</m:cn>
+	      </m:matrixrow>
+	      <m:matrixrow>
+		<m:cn type="rational">1<m:sep/>16</m:cn>
+		<m:cn type="rational">6<m:sep/>16</m:cn>
+		<m:cn type="rational">3<m:sep/>16</m:cn>
+		<m:cn type="rational">6<m:sep/>16</m:cn>
+		<m:cn>0</m:cn>
+	      </m:matrixrow>
+	      <m:matrixrow>
+		<m:cn>0</m:cn>
+		<m:cn type="rational">2<m:sep/>16</m:cn>
+		<m:cn type="rational">2<m:sep/>16</m:cn>
+		<m:cn type="rational">10<m:sep/>16</m:cn>
+		<m:cn type="rational">2<m:sep/>16</m:cn>
+	      </m:matrixrow>
+	      <m:matrixrow>
+		<m:cn type="rational">1<m:sep/>64</m:cn>
+		<m:cn type="rational">12<m:sep/>64</m:cn>
+		<m:cn type="rational">9<m:sep/>64</m:cn>
+		<m:cn type="rational">36<m:sep/>64</m:cn>
+		<m:cn type="rational">6<m:sep/>64</m:cn>
+	      </m:matrixrow>
+	      <m:matrixrow>
+		<m:cn type="rational">4<m:sep/>256</m:cn>
+		<m:cn type="rational">48<m:sep/>256</m:cn>
+		<m:cn type="rational">36<m:sep/>256</m:cn>
+		<m:cn type="rational">144<m:sep/>256</m:cn>
+		<m:cn type="rational">24<m:sep/>256</m:cn>
+	      </m:matrixrow>
+	    </m:matrix>
+	  </m:apply>
+	</m:math>
+
+	Solve 
+	<m:math>
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:times/>
+	      <m:ci type="vector">π</m:ci>
+	      <m:ci type="matrix">P</m:ci>
+	    </m:apply>
+	    <m:ci type="vector">π</m:ci>
+	  </m:apply>
+	</m:math> plus the normalization equation.
+      </para>
+
+      <para id="p18">
+	The solution is 
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:vector>
+	      <m:apply>
+		<m:selector/>
+		<m:ci type="vector">π</m:ci>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:selector/>
+		<m:ci type="vector">π</m:ci>
+		<m:ci>2a</m:ci>
+	      </m:apply>
+	      <m:apply>
+		<m:selector/>
+		<m:ci type="vector">π</m:ci>
+		<m:ci>2b</m:ci>
+	      </m:apply>
+	      <m:apply>
+		<m:selector/>
+		<m:ci type="vector">π</m:ci>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:selector/>
+		<m:ci type="vector">π</m:ci>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	    </m:vector>
+	    <m:vector>
+	      <m:cn>0.0323</m:cn>
+	      <m:cn>0.2419</m:cn>
+	      <m:cn>0.1452</m:cn>
+	      <m:cn>0.5081</m:cn>
+	      <m:cn>0.0726</m:cn>
+	    </m:vector>
+	  </m:apply>
+	</m:math>
+
+      The average memory module concurrency is
+
+	<m:math display="block">
+	  <m:apply>
+	    <m:eq/>
+	    <m:apply>
+	      <m:mean/>
+	      <m:ci>B</m:ci>
+	    </m:apply>
+	    <m:apply>
+	      <m:plus/>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>1</m:cn>
+		</m:apply>
+		<m:cn>1</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:plus/>
+		  <m:apply>
+		    <m:selector/>
+		    <m:ci type="vector">π</m:ci>
+		    <m:ci>2a</m:ci>
+		  </m:apply>
+		  <m:apply>
+		    <m:selector/>
+		    <m:ci type="vector">π</m:ci>
+		    <m:ci>2b</m:ci>
+		  </m:apply>
+		</m:apply>
+		<m:cn>2</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>3</m:cn>
+		</m:apply>
+		<m:cn>3</m:cn>
+	      </m:apply>
+	      <m:apply>
+		<m:times/>
+		<m:apply>
+		  <m:selector/>
+		  <m:ci type="vector">π</m:ci>
+		  <m:cn>4</m:cn>
+		</m:apply>
+		<m:cn>4</m:cn>
+	      </m:apply>
+	    </m:apply>
+	    <m:cn>2.2610</m:cn>
+	  </m:apply>
+	</m:math>
+      </para>
+    </example>
+
+    <para id="p19">
+      The three examples allow us to compare the average memory module
+      concurrency with four modules for two, three, and four
+      processors:
+    </para>
+
+    <table frame="all" id="table4" summary="">
+      <tgroup cols="2">
+	<thead>
+	  <row>
+	    <entry>p</entry>
+	    <entry>
+	      <m:math>
+		<m:apply>
+		  <m:mean/>
+		  <m:ci>B</m:ci>
+		</m:apply>
+	      </m:math>
+	    </entry>
+	  </row>
+	</thead>
+	<tbody>
+	  <row>
+	    <entry>2</entry>
+	    <entry>1.750</entry>
+	  </row>
+	  <row>
+	    <entry>3</entry>
+	    <entry>2.269</entry>
+	  </row>
+	    <row>
+	    <entry>4</entry>
+	    <entry>2.261</entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </table>
+
+    <para id="p20">
+      In going from 2 to 3 processors, we see about a 30% increase
+      in memory module concurrency.  When we go from 3 processors to
+      4, the performance improves only about 15.5%.
+    </para>
+  </content>
+
+</document>

@@ -1,0 +1,39 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Open Education Cup: Preface</title>
+  <metadata><md:content-id>undefined</md:content-id><md:title/><md:uuid>6c349533-a2d2-44a9-baa6-4dad309fa5ba</md:uuid>
+</metadata>
+  <content>
+
+
+    <para id="intro1">Thank you for your interest in the Open Education Cup 2008-09 competition.</para>   
+
+<para id="intro2">This book is designed to provide you with information about the competition as well as resources to assist you in crafting your contest submissions.  This book has been divided into three chapters as follows:
+
+</para>
+<para id="intro3"><title>Chapter 1 - About the Open Education Cup Contest</title>This chapter provides basic information about the Open Education Cup competition, including:
+
+<list id="ch1" list-type="bulleted"><item>The purpose of the competition.</item>
+ <item>Contest rules, awards, and criteria.</item>
+ <item>Submission instructions.</item>
+ <item>Information on Open Education Resources (OER) and Connexions (<link url="http://cnx.org">http://cnx.org</link>).</item>
+</list></para>
+<para id="intro4"><title>Chapter 2 - Book Introduction and Example Connexions Modules</title>This chapter includes the <link document="m18099">Parallel Computing</link> module by <link url="http://cnx.org/member_profile/ckoelbel">Charles Koelbel</link>.  This module, which will serve as the introductory chapter in the High Performance Computing textbook comprised of winning contest entries, serves to establish the framework for contest submissions and provide a foundation upon which participants can build their contributions.  This chapter also includes two exemplar modules that illustrate several Connexions features participants are encouraged to take advantage of and to serve as inspiration for crafting high-quality modules.</para>
+<para id="intro5"><title>Chapter 3 - Authoring in Connexions</title>This chapter includes two brief CNXML tutorials as well as links to additional resources for Connexions authors.</para>
+<para id="intro6">This book was created in Connexions by assembling a customized combination of new and existing content modules.  As you browse this booklet, you will come across several examples of the power of the Connexions platform, including:
+
+<list id="features" list-type="bulleted">
+ <item>Automatic numbering of figures, sections, chapters, and equations.</item>
+ <item>Automatically generated Glossary and Index sections.</item>
+ <item>Attribution of individual modules used within the collection.</item>
+ <item>Powerful XML technologies that allow content to be viewed in print, online or as a PDF download without any additional work by the author.</item>
+ <item>Support for MathML content, allowing for high-fidelity representations of complex mathematical expressions.</item>
+ <item>Multiple authoring paths, including Word and LaTeX file importers and support for contextual and/or full-source CNXML editing.</item>
+</list>
+
+  You are encouraged to view this collection online at <link document="col10594">http://cnx.org/content/col10594/latest/</link> to see how Connexions content can be accessed and viewed freely online, downloaded as a free PDF, or ordered as a low-cost print-on-demand book (such as the one distributed at SC08).  Selected contest entries will be included in a new collection such as this one that will combine the best modules into a free, open, and fully customizable collection/textbook available to everyone globally.
+</para>
+<para id="intro7">We hope you will consider contributing to this project and participating in the Open Education Cup competition.  If you have any questions or difficulties, please contact Jonathan Emmons at <link url="mailto:cnx@cnx.org">cnx@cnx.org</link>.
+</para>
+<para id="intro8">Please enjoy the rest of SC08, and have a great day.</para>
+  </content>
+</document>

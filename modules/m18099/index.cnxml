@@ -1,0 +1,503 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Parallel Computing</title>
+  <metadata><md:content-id>undefined</md:content-id><md:title/><md:uuid>89a6ff74-614d-4796-9c9c-76a74197e2e1</md:uuid>
+</metadata>
+  <content>
+
+      
+      <para id="id11140745"><title>What is parallel computing, and why should I care?</title><term target-id="paralleldef">Parallel computing</term> simply means using more than one computer processor to solve a problem. Classically, computers have been presented to newcomers as “sequential” systems, where the processor does one step at a time. There are still machines and applications where this is true, but today most systems have parallel features. Some examples are shown below.<footnote id="idp6101904">We hasten to point out that, although we use certain commercial systems and chips as examples, they are by no means the only ones. Additional examples in all categories are available from other companies. The Open Education Cup would welcome modules on any type of parallel system.</footnote></para>
+<figure id="fig1"><media id="idp7442928" alt=""><image src="../../media/graphics1.jpg" mime-type="image/jpeg" width="500" print-width="2in"/></media></figure>
+              <para id="para1">Supercomputers achieve astounding speed on scientific computations by using amazing numbers of processors. The Roadrunner system at Los Alamos National Laboratory (<link target-id="fig1"/>) is currently the world’s fastest computer, with over 100,000 processor cores combining to reach 1 PetaFLOPS (<m:math><m:msup><m:mn>10</m:mn><m:mn>15</m:mn></m:msup></m:math> floating point operations per second). </para>
+
+              <figure id="fig2"><media id="idm2306656" alt=""><image src="../../media/graphics2.jpg" mime-type="image/jpeg" width="500" print-width="2in"/></media></figure>
+              <para id="para2">Servers use multiple processors to handle many simultaneous requests in a timely manner. For example, a web server might use dozens of processors to supply hundreds of pages per second. A 64-processor server (<link target-id="fig2"/>) could supply an average university department’s need for computation, file systems, and other support.</para>
+
+              <figure id="fig3"><media id="idp983616" alt=""><image src="../../media/graphics3.jpg" mime-type="image/jpeg" width="500" print-width="3in"/></media></figure>
+              <para id="para3">Grid computing combines distributed computers (often from different organizations) into one unified system. One vision (<link target-id="fig3"/>) is that a scientist working at her desk in Houston can send a problem to be solved by supercomputers in Illinois and California, accessing data in other locations. Other grid computing projects, such as the World Community Grid, seek to use millions of idle PCs to solve important problems, such as searching for candidate drug designs.</para>
+  
+              <figure id="fig4"><media id="idm12640240" alt=""><image src="../../media/graphics4.jpg" mime-type="image/jpeg" width="500" print-width="2.5in"/></media></figure>
+              <para id="para4">Multicore chips include several processor cores on a single computer chip. Even a laptop (or other small system) that uses a multicore chip is a parallel computer. For example, the Quad-core AMD Opteron processor (<link target-id="fig4"/>) is one of a family of chips with 4 cores. As another example, the IBM Cell processor chips used in the Roadrunner supercomputer have 8 “Synergistic Processing Elements” (i.e. fast cores) each, plus 1 Power Processing Element (which controls the others).</para>
+
+              <figure id="fig5"><media id="idp7708224" alt=""><image src="../../media/graphics5.jpg" mime-type="image/jpeg" width="500" print-width="3in"/></media></figure>
+              <para id="para5">Graphics processors (often called GPUs) are a special type of chip originally designed for image processing. They feature massive numbers of scalar processors to allow rendering many pixels in parallel. For example, The NVIDIA Tesla series (<link target-id="fig5"/>) boasts 240 processors. Such special-purpose parallel chips are the basis for accelerated computing.</para>
+
+      <para id="id11041847">In effect, all modern computing is parallel computing.</para>
+      <para id="id11041857">Getting the most out of a parallel computer requires finding and exploiting opportunities to do several things at once. Some examples of such opportunities in realistic computer applications might include:</para>
+      <list list-type="bulleted" id="id11127242">
+        <item>Data parallelism – updating many elements of a data structure simultaneously, like a image processing program that smoothes out pixels</item>
+        <item>Pipelining – using separate processors on different stages of a computation, allowing several problems to be “in the pipeline” at once</item>
+        <item>Task parallelism – assigning different processors to different conceptual tasks, such as a climate simulation that separates the atmospheric and oceanic models</item>
+        <item>Task farms – running many similar copies of a task for later combining, as in Monte Carlo simulation or testing design alternatives</item>
+        <item>Speculative parallelism – trying alternatives that may not be necessary to pre-compute possible answers, as in searching for the best move in a game tree</item>
+      </list>
+      <para id="id11063564">However, doing this may conflict with traditional sequential thinking. For example, a speculative program may do more total computation than its sequential counterpart, albeit more quickly. As another example, task-parallel programs may repeat calculations to avoid synchronizing and moving data. Moreover, some algorithms (such as depth-first search) are theoretically impossible to execute in parallel, because each step requires information from the one before it. These must be replaced with others (such as breadth-first search) that can run in parallel. Other algorithms require unintuitive changes to execute in parallel. For example, consider the following program:</para>
+      <code display="block" id="idm1626768">
+for i = 2 to N 
+  a[i] = a[i] + a[i-1]
+end
+    </code>
+      <para id="id11063185">One might think that this can only be computed sequentially. After all, every element <code display="inline">a[i]</code> depends on the one computed before it. But this is not so. We leave it to other module-writers to explain how the elements <code display="inline">a[i]</code> can all be computed in 
+<m:math><m:semantics><m:mrow><m:mstyle fontsize="12pt"><m:mrow><m:mrow><m:mtext>log</m:mtext><m:mfenced open="(" close=")"><m:mi>N</m:mi></m:mfenced></m:mrow></m:mrow></m:mstyle><m:mrow/></m:mrow><m:annotation encoding="StarMath 5.0"> size 12{"log" left (N right )} {}</m:annotation></m:semantics></m:math> data-parallel steps; for now, we simply note that the parallel program is not a simple loop. In summary, parallel computing requires parallel thinking, and this is very different from the sequential thinking taught to our computer and computational scientists. </para>
+      <para id="id11108044">This brings us to the need for new, different, and hopefully better training in parallel computing. We must train new students to embrace parallel computing if the field is going to advance. Equally, we must retrain programmers working today if we want new programs to be better than today. To that end, the Open Education Cup is soliciting educational modules in five areas at the core of parallel computing:</para>
+      <list id="id11108057" list-type="bulleted"><item>Parallel Architectures: Descriptions of parallel computers and how they operate, including particular systems (e.g. multicore chips) and general design principles (e.g. building interconnection networks). More information about this area is in the <link target-id="id10993097">Parallel Architectures section</link>.</item>
+        <item>Parallel Programming Models and Languages: Abstractions of parallel computers useful for programming them efficiently, including both machine models (e.g. PRAM or LogP) and languages or extensions (e.g. OpenMP or MPI). More information about this area is in the <link target-id="id11129007">Parallel Programming Models and Languages section</link>.</item>
+        <item>Parallel Algorithms and Applications: Methods of solving problems on parallel computers, from basic computations (e.g. parallel FFT or sorting algorithms) to full systems (e.g. parallel databases or seismic processing). More information about this area is in the <link target-id="id11041393">Parallel Algorithms and Applications section</link>.</item>
+        <item>Parallel Software Tools: Tools for understanding and improving parallel programs, including parallel debuggers (e.g. TotalView) and performance analyzers (e.g. HPCtoolkit and TAU Performance System). More information about this area is in the <link target-id="id10065451">Parallel Software Tools section</link>.</item>
+        <item>Accelerated Computing: Hardware and associated software can add parallel performance to more conventional systems, from Graphics Processing Units (GPUs) to Field Programmable Gate Arrays (FPGAs) to Application-Specific Integrated Circuits (ASICs) to innovative special-purpose hardware. More information about this area is in the <link target-id="id10057733">Accelerated Computing section</link>.</item>
+      </list>
+      <para id="id10993086">Entries that bridge the gap between two areas are welcome. For example, a module about a particular accelerated computing system might describe its accompanying language, and thus fall into both the Parallel Programming Models and Languages and Accelerated Computing categories. However, such modules can only be entered in one category each. To be eligible for awards in multiple categories, the module would need to be divided into appropriate parts, each entered in one category.</para>
+      <section id="id10993097">
+        <title>Parallel Architectures</title>
+        <para id="id11062788">Today, nearly all computers have some parallel aspects. However, there are a variety of ways that processors can be organized into effective parallel systems. The classic classification of <term target-id="paralleldef">parallel architectures</term> is <cite target-id="flynntaxonomy"><cite-title>Flynn’s taxonomy</cite-title></cite> based on the number of distinct instruction and data streams supplied to the parallel processors.</para>
+        <list id="id11062804" list-type="bulleted"><item>Single Instruction, Single Data (SISD) – These are sequential computers. This is the only class that is not a parallel computer. We include it only for completeness.</item>
+          <item>Multiple Instruction, Single Data (MISD) – Several independent processors work on the same stream. Few computers of this type exist. Arguably the clearest examples are fault tolerant systems that replicate a computation, comparing answers to detect errors; the flight controller on the US Space Shuttle is based on such a design. Pipelined computations are also sometimes considered MISD. However, the data passed between stages of the pipeline has been changed, so the “single” data aspect is murky at best.</item>
+          <item><term target-id="simddef">Single Instruction, Multiple Data (SIMD)</term> – A central controller sends the same stream of instructions to a set of identical processors, each of which operates on its own data. Additional control instructions move data or exclude unneeded processors. At a low level of modern architectures, this is often used to update arrays or large data structures. For example, GPUs typically get most of their speed from SIMD operation. Perhaps the most famous large-scale SIMD computer was the Thinking Machines CM-2 in the 1980s, which boasted up to 65,536 bit-serial processors.</item>
+          <item><term target-id="mimddef">Multiple Instruction, Multiple Data (MIMD)</term> – All processors execute their own instruction stream, each operating on its own data. Additional instructions are needed to synchronize and communicate between processors. Most computers sold as “parallel computers” today fall into this class. Examples include the supercomputers, servers, grid computers, and multicore chips described above.</item>
+        </list>
+        <para id="id9844084">Hierarchies are also possible. For example, a MIMD supercomputer might include SIMD chips as accelerators on each of its boards.</para>
+        <para id="id9844091">Beyond general class, many architectural decisions are critical in designing a parallel computer architecture. Two of the most important include:</para>
+        <list id="id9844098" list-type="bulleted"><item>Memory hierarchy and organization. To reduce data access time, most modern computers use a hierarchy of caches to keep frequently-used data accessible. This becomes particularly important in parallel computers, where many processors mean even more accesses. Moreover, parallel computers must arrange for data to be shared between processors. <term target-id="sharedmemorydef">Shared memory architectures</term> do this by allowing multiple processors to access the same memory. <term target-id="nonsharedmemorydef">Nonshared memory architectures</term> allot each processor its own memory, and require explicit communication to move data to another processor. A hybrid approach – non-uniform shared memory – places memory with each processor for fast access, but allows slower access to other processors’ memory.</item>
+          <item>Interconnection topology. To communicate and synchronize, processors in a parallel computer need a connection with each other. However, as a practical matter not all of these can be direct connections. Thus is born the need for interconnection networks. For example, interconnects in use today include simple buses, crossbar switches, token rings, fat trees, and 2- and 3-D torus topologies. At the same time, the underlying technology or system environment may affect the networks that are feasible. For example, grid computing systems typically have to accept the wide-area network that they have available.</item>
+        </list>
+        <para id="id11128990">All of these considerations (and more) can be formalized, quantified, and studied.</para>
+        <para id="id11128996">The Open Education Cup will accept entries relevant to any of the above architectures (except SISD). This might include case studies of parallel computers, comparisons of architectural approaches, design studies for future systems, or parallel computing hardware issues that we do not touch on here.</para>
+      </section>
+      <section id="id11129007">
+        <title>Parallel Programming Models and Languages</title>
+        <para id="id11041872"><term target-id="paralleldef">Parallel computers</term> require software in order to produce useful results. Writing that software requires a means of expressing it (that is, a language), which must in turn be based on an idea of how it will work (that is, a model). While it is possible to write programs specific to a given parallel architecture, many would prefer a more general model and language, just as most sequential programmers use a general language rather than working directly with assembly code. </para>
+        <para id="id11041884">Unfortunately, there is no single widely-accepted model of parallel computation comparable to the sequential Random Access Machine (RAM) model. In part, this reflects the diversity of parallel computer architectures and their resulting range of operations and costs. The following list gives just a few examples of the models that have been suggested.</para>
+        <list id="id11041894" list-type="bulleted"><item><cite target-id="csporig"><cite-title>Communicating Sequential Processes (CSP)</cite-title></cite>. This is a theoretical model of concurrent (that is, parallel) processes interacting solely through explicit messages. In that way, it is a close model of <term target-id="nonsharedmemorydef">nonshared memory architectures</term>. <cite target-id="cspbook"><cite-title>As the CSP model has developed</cite-title></cite>, however, its use has emphasized validation of system correctness rather than development of algorithms and programs.</item>
+          <item><cite target-id="pramorig"><cite-title>Parallel Random Access Machine (PRAM)</cite-title></cite>. In this model, all processors operate asynchronously and have constant-time access to shared memory. This is similar to a <term target-id="sharedmemorydef">shared memory architecture</term>, and is therefore useful in describing <cite target-id="pram2"><cite-title>parallel algorithms</cite-title></cite> for such machines. However, PRAM abstracts actual shared memory architectures by assuming that all memory can be accessed at equal cost, which is generally not true in practice.</item>
+          <item><cite target-id="bsp"><cite-title>Bulk Synchronous Processes (BSP)</cite-title></cite>. In this model, all processors operate asynchronously and have direct access to only their own memory. Algorithms proceed in a series of “supersteps” consisting of local computation, communication exchanges, and barrier synchronizations (where processors wait at the barrier for all others to arrive). This can model either shared or non-shared memory <term target-id="mimddef">MIMD architectures</term>, but simplifies many issues in organizing the communication and synchronization.</item>
+          <item><cite target-id="logp"><cite-title>LogP (for Latency, overhead, gap, Processors)</cite-title></cite>. This model can be thought of as a refinement of BSP. LogP allows a more detailed treatment of architectural constraints such as interconnect network capacity. It also allows more detailed scheduling of communication, including overlap of computation with communication. LogP can model shared- and non-shared memory MIMD machines, but abstracts the specific topology of the network. (The capitalization is a pun on 
+<m:math><m:semantics><m:mrow><m:mstyle fontsize="12pt"><m:mrow><m:mrow><m:mi>O</m:mi><m:mo stretchy="false">(</m:mo><m:mtext>log</m:mtext><m:mi>P</m:mi><m:mo stretchy="false">)</m:mo></m:mrow></m:mrow></m:mstyle><m:mrow/></m:mrow><m:annotation encoding="StarMath 5.0"> size 12{O \( "log"P \) } {}</m:annotation></m:semantics></m:math> theoretical bounds). </item>
+        </list>
+        <para id="id9939086">Programming languages and systems for parallel computers are equally diverse, as the following list shows.</para>
+        <list id="id9939092" list-type="bulleted"><item>Libraries can encapsulate parallel operations. Libraries of synchronization and communication primitives are especially useful. For example, <cite target-id="mpi"><cite-title>the MPI library</cite-title></cite> provides the send and receive operations needed for a CSP-like message passing model. When such libraries are called from sequential languages, there must be a convention for starting parallel operations. The most common way to do this is the Single Program Multiple Data (SPMD) paradigm, in which all processors execute the same program text. </item>
+          <item>Extensions to sequential languages can follow a particular model of parallel computation. For example, <cite target-id="openmp"><cite-title>OpenMP</cite-title></cite> reflects a PRAM-like shared memory model. <cite target-id="hpf"><cite-title>High Performance Fortran (HPF)</cite-title></cite> (<cite target-id="hpfhistory"><cite-title>see also</cite-title></cite>) was based on a data-parallel model popularized by <cite target-id="cmf"><cite-title>CM Fortran</cite-title></cite>. Common extensions include parallel loops (often called “<code display="inline">forall</code>” to evoke “<code display="inline">for</code>” loops) and synchronization operations.</item>
+          <item>Entire new languages can incorporate parallel execution at a deep level, in forms not directly related to the programming models mentioned above. For example, <cite target-id="cilk"><cite-title>Cilk</cite-title></cite> is a functional language that expresses parallel operations by independent function calls. <cite target-id="sisal"><cite-title>Sisal</cite-title></cite> was based on the concept of streams, in the elements in a series (stream) of data could be processed independently. Both languages have been successfully implemented on a variety of platforms, showing the value of a non-hardware-specific abstraction.</item>
+          <item>Other languages more directly reflect a parallel architecture, or a class of such architectures. For example, Partitioned Global Address Space (PGAS) languages like <cite target-id="caf"><cite-title>Co-Array Fortran</cite-title></cite>, <cite target-id="chapel"><cite-title>Chapel</cite-title></cite>, <cite target-id="fortress"><cite-title>Fortress</cite-title></cite>, and <cite target-id="x10"><cite-title>X10</cite-title></cite> consider memory to be shared, but each processor can access its own memory much faster than other processors’ memory. This is similar to many non-uniform shared memory architectures in use today. <cite target-id="cuda"><cite-title>CUDA</cite-title></cite> is a rather different parallel language designed for programming on GPUs. It features explicit partitioning of the computation between the host (i.e. the controller) and the “device” (i.e. GPU processors). Although these languages are to some extent hardware-based, they are general enough that implementations on other platforms are possible. </item>
+        </list>
+        <para id="id11041382">Neither of the lists above is in any way exhaustive. The Open Education Cup welcomes entries about any aspect of expressing parallel computation. This includes descriptions of parallel models, translations between models, descriptions of parallel languages or programming systems, implementations of the languages, and evaluations of models or systems. </para>
+      </section>
+      <section id="id11041393"><title>Parallel Algorithms and Applications</title>
+        
+        <para id="id11041400">Unlike performance improvements due to increased clock speed or better compilers, running faster on parallel architectures doesn’t just happen. Instead, <term target-id="paralleldef">parallel algorithms</term> have to be devised to take advantage of multiple processors, and applications have to be updated to use those algorithms. The methods (and difficulty) of doing this vary widely. A few examples show the range of possibilities.</para>
+        <para id="id11041417">Some theoretical work has taken a data-parallel-like approach to designing algorithms, allowing the number of processors to increase with the size of the data. For example, consider summing the elements of an array. Sequentially, we would write this as</para>
+        <code display="block" id="idp4734288">
+x = 0
+for i = 1 to n 
+  x = x + a[i]
+end
+    </code>
+        <para id="id11062354">Sequentially, this would run in <m:math><m:semantics><m:mrow><m:mstyle fontsize="12pt"><m:mrow><m:mrow><m:mi>O</m:mi><m:mo stretchy="false">(</m:mo><m:mi>n</m:mi><m:mo stretchy="false">)</m:mo></m:mrow></m:mrow></m:mstyle><m:mrow/></m:mrow><m:annotation encoding="StarMath 5.0"> size 12{O \( "log"n \) } {}</m:annotation></m:semantics></m:math> time. To run this in parallel, consider <code display="inline">n</code> processes, numbered 1 to <code display="inline">n</code>, each containing original element <code display="inline">a[i]</code>. We might then perform the computation as a <cite target-id="dataparallel"><cite-title>data parallel tree sum</cite-title></cite>, with each node at the same level of the tree operating in parallel.<footnote id="idp7561376">We use “forall” to denote parallel execution in all examples, although there are many other constructs. </footnote></para>
+        <code display="block" id="idp7700320">
+step = 1
+forall i = 1 to n do 
+  xtmp[i] = a[i]
+end 
+while step &lt; n do 
+  forall i = 1 to n-step by 2*step do 
+    xtmp[i] = xtmp[i] + xtmp[i+step] 
+  end 
+  step = step * 2
+end
+x = xtmp[1]
+    </code>
+        <para id="id11062424">This takes 
+<m:math><m:semantics><m:mrow><m:mstyle fontsize="12pt"><m:mrow><m:mrow><m:mi>O</m:mi><m:mo stretchy="false">(</m:mo><m:mtext>log</m:mtext><m:mi>n</m:mi><m:mo stretchy="false">)</m:mo></m:mrow></m:mrow></m:mstyle><m:mrow/></m:mrow><m:annotation encoding="StarMath 5.0"> size 12{O \( "log"n \) } {}</m:annotation></m:semantics></m:math> time, which is optimal in parallel. Many such algorithms and bounds are known, and classes (analogous to P and NP) can be constructed describing “solvable” parallel problems.</para>
+        <para id="id11463156">Other algorithmic work has concentrated on mapping algorithms to more limited set of parallel processors. For example, the above algorithm might be <cite target-id="pram2"><cite-title>mapped onto <code display="inline">p</code> processors</cite-title></cite> in the following way.</para>
+        <code display="block" id="id11463169">
+forall j = 1 to p do 
+  lo[j] = 1+(j-1)*n/p 
+  hi[j] = j*n/p 
+  xtmp[j] = 0 
+  for I = lo[j] to hi[j] do 
+    xtmp[j] = xtmp[j] + a[i] 
+  end 
+  do 
+    if j=1 
+    then step = 1  
+    barrier_wait() 
+    while step[j] &lt; n do 
+      if j+step[j]&lt;p and j mod (step[j]*2) = 1 
+      then xtmp[j] = xtmp[j] + xtmp[j+step[j]] 
+    end 
+    step[j] = step[j] * 2 
+    barrier_wait() 
+  end
+end
+x = xtmp[1]</code>
+        <para id="id11463240">Note that the barrier synchronizations are necessary to ensure that no processor <code display="inline">j</code> runs ahead of the others, thus causing some updates of <code display="inline">xtmp[j]</code> to use the wrong data values. The time for this algorithm is 
+<m:math><m:semantics><m:mrow><m:mstyle fontsize="12pt"><m:mrow><m:mrow><m:mi>O</m:mi><m:mo stretchy="false">(</m:mo><m:mrow><m:mrow><m:mi>n</m:mi><m:mo stretchy="false">/</m:mo><m:mi>p</m:mi></m:mrow><m:mo stretchy="false">+</m:mo><m:mtext>log</m:mtext></m:mrow><m:mi>p</m:mi><m:mo stretchy="false">)</m:mo></m:mrow></m:mrow></m:mstyle><m:mrow/></m:mrow><m:annotation encoding="StarMath 5.0"> size 12{O \( n/p+"log"p \) } {}</m:annotation></m:semantics></m:math>. This is optimal for operation count, but not necessarily for number of synchronizations. </para>
+        <para id="id10065434">Many other aspects of parallel algorithms deserve study. For example, the design of algorithms for other important problems is a vast subject, as is describing general families of parallel algorithms. Analyzing algorithms with respect to time, memory, parallel overhead, locality, and many other measures is important in practice. Practical implementation of algorithms, and measuring those implementations, is particularly useful in the real world. Describing the structure of a full parallel application provides an excellent guidepost for future developers. The Open Education Cup invites entries on all these aspects of parallel algorithms and applications, as well as other relevant topics.</para>
+      </section>
+      <section id="id10065451">
+        <title>Parallel Software Tools</title>
+        <para id="id10065476">Creating a <term target-id="paralleldef">parallel application</term> is complex, but developing a correct and efficient parallel program is even harder. We mention just a few of the difficulties in the following list.</para>
+        <list id="id10065484" list-type="bulleted"><item>All the bugs that can occur in sequential programming – such as logic errors, dangling pointers, and memory leaks – can also occur in parallel programming. Their effects may be magnified, however. As one architect of a grid computing system put it, “Now, when we talk about global memory, we really mean <emphasis>global</emphasis>.”</item>
+          <item>Missing or misplaced synchronization operations are possible on all <term target-id="mimddef">MIMD</term> architectures. Often, such errors lead to deadlock, the condition where a set of processors are forever waiting for each other. </item>
+          <item>Improper use of synchronization can allow one processor to read data before another has initialized it. Similarly, poor synchronization can allow two processors to update the same data in the wrong order. Such situations are called "race conditions", since the processors are racing to access the data.</item>
+          <item>Even with proper synchronization, poor scheduling can prevent a given processor from ever accessing a resource that it needs. Such a situation is called starvation.</item>
+          <item>Correct programs may still perform poorly because one processor has much more work than others. The time for the overall application then depends on the slowest processor. This condition is called load imbalance.</item>
+          <item>Processors may demand more out of a shared resource, such as a memory bank or the interconnection network, than it can provide. This forces some requests, and thus the processors that issued them, to be delayed. This situation is called contention. </item>
+          <item>Perhaps worst of all, the timing between MIMD processors may vary from execution to execution due to outside events. For example, on a shared machine there might be additional load on the interconnection network from other users. When this happens, any of the effects above may change from run to run of the program. Some executions may complete with no errors, while others produce incorrect results or never complete. Such “Heisenbugs” (named for Werner Heisenberg, the discoverer of the uncertainty principle in quantum mechanics) are notoriously difficult to find and fix.</item>
+        </list>
+        <para id="id10057650">Software tools like debuggers and profilers have proved their worth in helping write sequential programs. In parallel computing, tools are at least as important. Unfortunately, parallel software tools are newer and therefore less polished than their sequential versions. They also must solve some additional problems, beyond simply dealing with the new issues noted above.</para>
+        <list list-type="bulleted" id="id10057661">
+          <item>Parallel tools must handle multiple processors. For example, where a sequential debugger sets a checkpoint, a parallel debugger may need to set that checkpoint on many processors.</item>
+          <item>Parallel tools must handle large data. For example, where a sequential trace facility may produce megabytes of data, the parallel trace may produce megabytes for each of hundreds of processors, adding up to gigabytes.</item>
+          <item>Parallel tools must be scalable. Just as some bugs do not appear in sequential programs until they are run with massive data sets, some problems in parallel programs do not appear until they execute on thousands of processors. </item>
+          <item>Parallel tools must avoid information overload. For example, where a sequential debugger may only need to display a single line number, its parallel counterpart may need to show line numbers on dozens of processors.</item>
+          <item>Parallel tools must deal with timing and uncertainty. While it is rare for a sequential program’s behavior to depend on time, this is the common case for parallel programs.</item>
+        </list>
+        <para id="id10057713">Current parallel tools - for example  <cite target-id="crayapprentice"><cite-title>Cray Apprentice2</cite-title></cite>, <cite target-id="hpctoolkit"><cite-title>HPCToolkit</cite-title></cite>, <cite target-id="tau"><cite-title>TAU</cite-title></cite>, <cite target-id="totalview"><cite-title>TotalView</cite-title></cite>, and <cite target-id="vtune"><cite-title>VTune</cite-title></cite> - have solved some of these problems. For example, data visualization has been successful in avoiding information overload and understanding large data sets. However, other issues remain difficult research problems.</para>
+        <para id="id10057721">The Open Education Cup welcomes entries related to the theory and practice of parallel software tools. This includes descriptions of existing debuggers, profilers, and other tools; analysis and visualization techniques for parallel programs and data; experiences with parallel tools; and any other topic of interest to tool designers or users.</para>
+      </section>
+      <section id="id10057733">
+        <title>Accelerated Computing</title>
+        <para id="para-id10057733">Accelerated computing is a form of <term target-id="paralleldef">parallel computing</term> that is rapidly gaining popularity. For many years, some general-purpose computer systems have included accelerator chips to speed up specialized tasks. For example, early microprocessors did not implement floating-point operations directly, so machines in the technical market often included floating-point accelerator chips. Today, microprocessors are much more capable, but some accelerators are still useful. The list below suggests a few of them.</para><list id="element-555" list-type="bulleted"><item>Graphics Processing Units (GPUs) provide primitives commonly used in graphics rendering. Among the operations sped up by these chips are texture mapping, geometric transformations, and shading. The key to accelerating all of these operations is parallel computing, often realized by computing all pixels of a display or all objects in a list independently.</item>
+<item>Field Programmable Gate Arrays (FPGAs) provide many logic blocks linked by an interconnection fabric. The interconnections can be reconfigured dynamically, thus allowing the hardware datapaths to be optimized for a given application or algorithm. When the logic blocks are full processors, the FPGA can be used as a parallel computer.</item>
+<item>Application Specific Integrated Circuits (ASICs) are chip designs optimized for a special use. ASIC designs can now incorporate several full processors, memory, and other large components. This allows a single ASIC to be a parallel system for running a particular algorithm (or family of related algorithms).</item>
+<item>Digital Signal Processor (DSP) chips are microprocessors specifically designed for signal processing applications such as sensor systems. Many of these applications are very sensitive to latency, so performace of computation and data transfer is heavily optimized. DSPs are able to do this by incorporating <term target-id="simddef">SIMD parallelism</term> at the instruction level and pipelining of arithmetic units.</item>
+<item>Cell Broadband Engine Architecture (CBEA, or simply Cell) is a relatively new architecture containing a general-purpose computer and several streamlined coprocessors on a single chip. By exploiting the <term target-id="mimddef">MIMD parallelism</term> of the coprocessors and overlapping memory operations with computations, the Cell can achieve impressive performance on many codes. This makes it an attractive adjunct to even very capable systems.</item>
+</list><para id="element-735">As the list above shows, accelerators are now themselves parallel systems. They can also be seen as a new level in hierarchical machines, where they operate in parallel with the host processors. A few examples illustrate the possibilities.</para><list id="element-344" list-type="bulleted"><item>General Purpose computing on GPUs (usually abbreviated as GPGPU) harnesses the computational power of GPUs to perform non-graphics calculations. Because many GPU operations are based on matrix and vector operations, this is a particularly good match with linear algebra-based algorithms.</item>
+<item>Reconfigurable Computing uses FPGAs adapt high-speed hardware operations for the needs of an application. As the application goes through phases, the FPGA can be reconfigured to accelerate each phase in turn.</item>  
+<item>The Roadrunner supercomputer gets most of its record-setting performance from Cell processors used as accelerators on its processing boards.</item> 
+
+</list><para id="element-185">The Open Education Cup welcomes entries describing any aspect of accelerated computing in parallel systems. We are particularly interested in descriptions of systems with parallel accelerator components, experience with programming and running these systems, and software designs that automatically exploit parallel accelerators.</para>
+      </section>
+
+  </content>
+
+<glossary id="parallelglossary">
+
+	  <definition id="mimddef">
+	    <term>MIMD</term>
+	    <meaning id="idp7312336">
+              Multiple Instruction Multiple Data; a type of parallel computer in which the processors run independently, possibly performing completely different operations, each on its own data.
+            </meaning>
+	  </definition>
+
+	  <definition id="nonsharedmemorydef">
+	    <term>nonshared memory</term>
+	    <meaning id="idm4381264">
+              a type of parallel computer in which each processor can directly access only its own section of memory; data to be shared with other processors must be explicitly copied to other memory areas.
+            </meaning>
+	  </definition>
+
+	  <definition id="paralleldef">
+	    <term>parallel</term>
+	    <meaning id="idp6566208">
+              Performing more than one operation at a time; (of computers) having more than one processing unit.
+            </meaning>
+	    <example id="parallelex">
+	      <para id="parallelexpara">
+	        "The parallel computer had 1024 CPU chips, each with 2 processor cores, allowing 2048 simultaneous additions."
+	      </para>
+	    </example>
+	  </definition>
+
+	  <definition id="sharedmemorydef">
+	    <term>shared memory</term>
+	    <meaning id="idp8745872">
+              a type of parallel computer in which all processors can access a common area of memory.
+            </meaning>
+	  </definition>
+
+
+	  <definition id="simddef">
+	    <term>SIMD</term>
+	    <meaning id="idp2582784">
+              Single Instruction Multiple Data; a type of parallel computer in which all processors execute the same instruction simultaneously, each on its own data.
+            </meaning>
+	  </definition>
+
+
+</glossary>
+
+
+<bib:file>
+
+
+ <bib:entry id="fortress">
+  <bib:manual>
+    <bib:author>Allen, Eric and others</bib:author>
+    <bib:title>The Fortress Language Specification, Version 1.0</bib:title>
+    <bib:organization>Sun Microsystems, Inc.</bib:organization>
+    <bib:year>2008</bib:year>
+    <bib:note>Available at http://research.sun.com/projects/plrg/fortress.pdf</bib:note>
+  </bib:manual>
+ </bib:entry>
+
+
+ <bib:entry id="cilk">
+  <bib:inproceedings>
+    <bib:author>Blumofe, Robert D. and others</bib:author>
+    <bib:title>Cilk: An Efficient Multithreaded Runtime System</bib:title>
+    <bib:booktitle>Proceedings of the Fifth ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming (PPoPP)</bib:booktitle>
+    <bib:year>1995</bib:year>
+    <bib:pages>207–216</bib:pages>
+  </bib:inproceedings>
+ </bib:entry>
+
+
+ <bib:entry id="chapel">
+  <bib:article>
+    <bib:author>Chamberlain, Bradford L. and Callahan, David and Zima, Hans P.</bib:author>
+    <bib:title>Parallel Programmability and the Chapel Language</bib:title>
+    <bib:journal>International Journal of High Performance Computing Applications</bib:journal>
+    <bib:year>2007</bib:year>
+    <bib:volume>21</bib:volume>
+    <bib:number>3</bib:number>
+    <bib:pages>291-312</bib:pages>
+  </bib:article>
+ </bib:entry>
+
+ <bib:entry id="crayapprentice">
+  <bib:manual>
+    
+    <bib:title>Cray Apprentice2 for Cray XT3 systems 3.1 Man Pages</bib:title>
+<bib:organization>Cray, Inc.</bib:organization>
+    <bib:year>2006</bib:year>
+    <bib:note>Available at http://docs.cray.com/cgi-bin/craydoc.cgi?mode=Search;newest=0;sw_releases=sw_releases-0q55oxx9-1149598079;this_sort=title;sq=doc_type%3dman;browse=1</bib:note>
+  </bib:manual>
+ </bib:entry>
+
+ <bib:entry id="logp">
+  <bib:inproceedings>
+    <bib:author>Culler, David and others</bib:author>
+    <bib:title>LogP: Towards a realistic model of parallel computation</bib:title>
+    <bib:booktitle>Proceedings of the Fourth ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming (PPoPP)</bib:booktitle>
+    <bib:year>1993</bib:year>
+    <bib:pages>1-12</bib:pages>
+  </bib:inproceedings>
+ </bib:entry>
+
+ <bib:entry id="flynntaxonomy">
+  <bib:article>
+    <bib:author>Flynn, Michael</bib:author>
+    <bib:title>Some Computer Organizations and Their Effectiveness</bib:title>
+    <bib:journal>IEEE Transactions on Computers</bib:journal>
+    <bib:year>1972</bib:year>
+    <bib:volume>C-21</bib:volume>
+    <bib:pages>948</bib:pages>
+  </bib:article>
+ </bib:entry>
+
+ <bib:entry id="pramorig">
+  <bib:inproceedings>
+    <bib:author>Fortune, S. and Wyllie, J.</bib:author>
+    <bib:title>Parallelism in Random Access Machines</bib:title>
+    <bib:booktitle>Proceedings of the ACM Symposium on Theory of Computing (SToC)</bib:booktitle>
+    <bib:year>1978</bib:year>
+    <bib:pages>114-118</bib:pages>
+  </bib:inproceedings>
+ </bib:entry>
+
+
+ <bib:entry id="hpf">
+  <bib:manual>
+
+    <bib:title>High Performance Fortran Language Specification, Version 2.0</bib:title>
+    <bib:organization>High Performance Fortran Forum</bib:organization>
+    <bib:year>1997</bib:year>
+    <bib:note>Available at http://hpff.rice.edu/versions/hpf2/hpf-v20.pdf</bib:note>
+  </bib:manual>
+ </bib:entry>
+
+ <bib:entry id="dataparallel">
+  <bib:article>
+    <bib:author>Hillis, W. Daniel and Steele, Jr., Guy L.</bib:author>
+    <bib:title>Data parallel algorithms</bib:title>
+    <bib:journal>Communications of the ACM</bib:journal>
+    <bib:year>1986</bib:year>
+    <bib:volume>29</bib:volume>
+    <bib:number>12</bib:number>
+    <bib:pages>1170 - 1183</bib:pages>
+  </bib:article>
+ </bib:entry>
+
+
+ <bib:entry id="csporig">
+  <bib:article>
+    <bib:author>Hoare, C. A. R.</bib:author>
+    <bib:title>Communicating Sequential Processes</bib:title>
+    <bib:journal>Communications of the ACM</bib:journal>
+    <bib:year>1978</bib:year>
+    <bib:volume>21</bib:volume>
+    <bib:number>8</bib:number>
+    <bib:pages>666–677</bib:pages>
+  </bib:article>
+ </bib:entry>
+
+ <bib:entry id="cspbook">
+  <bib:book>
+    <bib:author>Hoare, C. A. R.</bib:author>
+   <bib:title>Communicating Sequential Processes</bib:title>
+   <bib:publisher>Prentice Hall</bib:publisher>
+   <bib:year>1985</bib:year>
+   <bib:note>Available at http://www.usingcsp.com/</bib:note>
+  </bib:book>
+ </bib:entry>
+
+
+ <bib:entry id="pram2">
+  <bib:book>
+   <bib:author>JaJa, J.</bib:author>
+   <bib:title>An Introduction to Parallel Algorithms</bib:title>
+   <bib:publisher>Addison-Wesley</bib:publisher>
+   <bib:year>1992</bib:year>
+  </bib:book>
+ </bib:entry>
+
+ <bib:entry id="hpfhistory">
+  <bib:inproceedings>
+    <bib:author>Kennedy, Ken and Koelbel, Charles and Zima, Hans</bib:author>
+    <bib:title>The Rise and Fall of High Performance Fortran: An Historical Object Lesson</bib:title>
+    <bib:booktitle>Proceedings of the Third ACM SIGPLAN Conference on History of Programming Languages (HOPL-III)</bib:booktitle>
+    <bib:year>2007</bib:year>
+    <bib:pages>7-1 - 7-22</bib:pages>
+  </bib:inproceedings>
+ </bib:entry>
+
+ <bib:entry id="vtune">
+  <bib:manual>
+    <bib:author>Levinthal, David</bib:author>
+    <bib:title>Introduction to
+Performance Analysis on
+Intel® Core™ 2 Duo Processors</bib:title>
+    <bib:organization>Intel Software and Solutions Group</bib:organization>
+    <bib:year>2006</bib:year>
+    <bib:note>Available at http://softwarecommunity.intel.com/isn/downloads/softwareproducts/pdfs/performance_analysis.pdf</bib:note>
+  </bib:manual>
+ </bib:entry>
+
+
+ <bib:entry id="sisal">
+  <bib:manual>
+    <bib:author>McGraw, J. R. and others</bib:author>
+    <bib:title>Sisal: Streams and iterations in a single-assignment language, Language Reference Manual, Version 1.1</bib:title>
+    <bib:organization>Lawrence Livermore National Laboratory</bib:organization>
+    <bib:address>Livermore, CA</bib:address>
+    <bib:year>1983</bib:year>
+  </bib:manual>
+ </bib:entry>
+
+ <bib:entry id="mpi">
+  <bib:manual>
+
+    <bib:title>MPI: A Message-Passing Interface Standard, Version 2.1</bib:title>
+    <bib:organization>Message Passing Interface Forum</bib:organization>
+    <bib:year>2008</bib:year>
+    <bib:note>Available at http://www.mpi-forum.org/docs/mpi21-report.pdf</bib:note>
+  </bib:manual>
+ </bib:entry>
+
+
+ <bib:entry id="caf">
+  <bib:article>
+    <bib:author>Numrich, Robert and Reid, Brian</bib:author>
+    <bib:title>Co-arrays in the next Fortran Standard</bib:title>
+    <bib:journal>ACM Fortran Forum</bib:journal>
+    <bib:year>2005</bib:year>
+    <bib:volume>24</bib:volume>
+    <bib:number>2</bib:number>
+    <bib:pages>4-17</bib:pages>
+  </bib:article>
+ </bib:entry>
+
+ <bib:entry id="cuda">
+  <bib:manual>
+
+    <bib:title>NVIDIA CUDA Compute Unified Device Architecture Programming Guide, Version 2.0</bib:title>
+    <bib:organization>NVIDIA Corporation</bib:organization>
+    <bib:year>2008</bib:year>
+    <bib:note>Available at http://developer.download.nvidia.com/compute/cuda/2_0</bib:note>
+  </bib:manual>
+ </bib:entry>
+
+ <bib:entry id="openmp">
+  <bib:manual>
+
+    <bib:title>OpenMP Application Program Interface, Version 3.0</bib:title>
+    <bib:organization>OpenMP Architecture Review Board</bib:organization>
+    <bib:year>2008</bib:year>
+    <bib:note>Available at hhttp://www.openmp.org/mp-documents/spec30.pdf</bib:note>
+  </bib:manual>
+ </bib:entry>
+
+ <bib:entry id="hpctoolkit">
+  <bib:article>
+    <bib:author>Qasem, Apan and Kennedy, Ken and Mellor-Crummey, John</bib:author>
+    <bib:title>Automatic Tuning of Whole Applications using Direct Search and a Performance-based Transformation System</bib:title>
+    <bib:journal>The Journal of Supercomputing</bib:journal>
+    <bib:year>2006</bib:year>
+    <bib:volume>36</bib:volume>
+    <bib:number>9</bib:number>
+    <bib:pages>183-196</bib:pages>
+  </bib:article>
+ </bib:entry>
+
+
+ <bib:entry id="cmf">
+  <bib:article>
+    <bib:author>Sabot, Gary W.</bib:author>
+    <bib:title>Optimizing CM Fortran Compiler for Connection Machine Computers</bib:title>
+    <bib:journal>Journal of Parallel and Distributed Computing</bib:journal>
+    <bib:year>1994</bib:year>
+    <bib:volume>23</bib:volume>
+    <bib:number>2</bib:number>
+    <bib:pages>224 - 238</bib:pages>
+  </bib:article>
+ </bib:entry>
+
+
+ <bib:entry id="x10">
+  <bib:manual>
+    <bib:author>Saraswat, Vijay and Nystrom, Nathaniel</bib:author>
+    <bib:title>Report on the Experimental Language X10, Version 1.7</bib:title>
+    <bib:organization>Sun Microsystems, Inc.</bib:organization>
+    <bib:year>2008</bib:year>
+    <bib:note>Available at http://dist.codehaus.org/x10/documentation/languagespec/x10-170.pdf</bib:note>
+  </bib:manual>
+ </bib:entry>
+
+ <bib:entry id="tau">
+  <bib:article>
+    <bib:author>Shende, S. and Malony, A. D.</bib:author>
+    <bib:title>TAU: The TAU Parallel Performance System</bib:title>
+    <bib:journal>International Journal of High Performance Computing Applications</bib:journal>
+    <bib:year>2006</bib:year>
+    <bib:volume>20</bib:volume>
+    <bib:number>2</bib:number>
+    <bib:pages>287-331</bib:pages>
+  </bib:article>
+ </bib:entry>
+
+ <bib:entry id="totalview">
+  <bib:manual>
+
+    <bib:title>TotalView Documentation</bib:title>
+    <bib:organization>TotalView Technologies</bib:organization>
+    <bib:year>2008</bib:year>
+    <bib:note>Available at http://www.totalviewtech.com/support/documentation/totalview/</bib:note>
+  </bib:manual>
+ </bib:entry>
+
+ <bib:entry id="bsp">
+  <bib:article>
+    <bib:author>Valiant, Leslie</bib:author>
+    <bib:title>A Bridging Model for Parallel Computation</bib:title>
+    <bib:journal>Communications of the ACM</bib:journal>
+    <bib:year>1990</bib:year>
+    <bib:volume>33</bib:volume>
+    <bib:number>8</bib:number>
+    <bib:pages>103-111</bib:pages>
+  </bib:article>
+ </bib:entry>
+
+
+
+</bib:file>
+</document>

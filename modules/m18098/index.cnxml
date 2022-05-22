@@ -1,0 +1,134 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Introduction and Overview of the 2008-'09 Open Education Cup</title>
+  <metadata><md:content-id>undefined</md:content-id><md:title/><md:uuid>33eb6420-1c08-46e6-8b18-6a8748148930</md:uuid>
+</metadata>
+  <content>
+
+      <note id="id6341233">For details and the most up to date rules on how to submit a lesson (Connexions <term url="http://cnx.org/help/glossary#module">module</term>) to the contest visit the Open Education Cup (<link url="http://OpenEducationCup.org">http://OpenEducationCup.org</link>) web page. The objective of this section is to provide a bird’s eye view of the contest. If there is disagreement between statements made in the printed version of this document, the electronic version of this document and in the contest website, the contest website should always be considered the "gold standard."</note>
+      <section id="element-26"><title>Introduction</title>
+<para id="element-808">This booklet was created to support the 2008-'09 Open Education Cup that was launched during SC08 (<link url="http://sc08.supercomputing.org">http://sc08.supercomputing.org/</link>)  in Austin, Texas. The Open Education Cup was conceived of and created in an attempt to create awareness and enhance the interest in creating Open Educational Resources (OER) in the area of HPC. We hope that the effort will help the HPC community recognize and embrace the opportunity that OER represents for accelerating workforce development. OER can enable educators, instructors and learners to access a rich set of free online teaching and learning material, hence lowering the barriers to offering education and training programs.
+
+</para><para id="element-338">It is critically important that we, as a community, recognize the increasing role of cyberinfrastructure in society. In particular, we must enable a larger fraction of our science and engineering graduates to become familiar with and even master the necessary technical skills to be productive citizens. The Open Education Cup will help create much needed content that can be used by teachers, instructors and learners to become at a minimum HPC literate or, better yet, capable of harnessing complex HPC resources and become expert users and programmers of current and future HPC systems. This is important, whether the objective is to harness the power of a national supercomputer with 100s of thousand of cores, exploit and program “personal supercomputers” with hardware accelerators delivering multi-teraflop capabilities, or program personal laptops that soon will have dozens of processing cores.</para><para id="element-995">The modules included in the booklet you are holding was not meant to represent specific content relevant to HPC, but was assembled in an attempt to demonstrate the power of the OER repository Connexions. This booklet, in addition to being a description of the Open Education Cup serves as a mini tutorial on OER and Connexions and includes a set of sample modules demonstrating of the capabilities of Connexions. The booklet is just a snapshot in time of what was available online. This printed collection was created using QOOP's on-demand publishing process supported by Connexions, at a fraction of the cost of a traditional textbook.</para><para id="element-994">As always will be the case with open online educational resources, what you are holding in your hands may have and has likely been updated online. We urge you to visit the Open Education Cup collection at <link document="col10594">http://cnx.org/content/col10594/latest/</link> to review the most up-to-date content. For the ultimate definition of the rules for the contest you should always refer to <link url="http://OpenEducationCup.org">http://OpenEducationCup.org</link>.</para>
+
+</section><section id="element-792"><title>Contest Overview</title>
+<para id="element-587">Open Educational Resources is offering the High Performance Computing community a unique opportunity to accelerate the education of the next generation science and engineering workforce. We all recognize and have read the reports reminding us that:
+
+<list id="trends" list-type="bulleted"><item> Parallel computing is becoming ubiquitous. While 10 years ago only the largest servers used parallel processors, today even lonely laptops sport dual- (and soon multi-) processor chips. It is clear that soon all software, if it is to effectively use the hardware, will have to run in parallel.
+</item>
+<item> Too few students are learning parallel computing concepts. This is particularly true at the undergraduate level (and below), where few introductory textbooks or curricula tackle the subject. As long as parallel computing is considered an advanced topic, the supply of parallel software will lag behind.
+</item>
+<item>
+Creating teaching materials about parallel computing is difficult. Writing or updating a textbook on any subject is difficult and time-consuming at best. Keeping up with a fast-changing field like parallel computing magnifies that problem exponentially. Worse, a ubiquitous change like parallel computing forces changes in all areas of the curriculum.
+</item>
+</list>
+It is worth noting that a number of national reports (e.g. the recent PCAST report, <link url="http://www.ostp.gov/pdf/nitrd_review.pdf">Leadership Under Challenge: Information Technology R&amp;D in a Competitive World</link>) have made similar observations.</para><para id="element-162">We believe OER will be a key component for addressing these needs. The idea behind OER is to make high-quality educational material freely available to teachers and learners so that they can master and enhance the material, in the same way that the Open Source movement has furthered the production of software. Once OER content exists, it can be picked up, used, and improved by a large and growing community. This creates a vibrant “ecosystem” for teaching and learning about a topic. In the context of parallel computing, we have already mentioned the need to create educational modules. Putting parallel computing modules into an OER system will allow others to comment on them, improve them, add to them, and (most importantly) learn from them. If the parallel computing community embraces OER and starts sharing its knowledge, it can rapidly help build the education and training materials needed to train learners, disseminate new information, and take the field to new heights.</para><para id="element-729">The Connexions project at Rice University is a technology platform supporting OER for authors, educators and learners. As an open source / open content educational project, Connexions can host, distribute and serve as a platform for authoring and maintaining educational material. It provides excellent support for OER, including establishing a framework for new collaborators, providing and encouraging reusable content (modules), accepting a variety of input formats and supporting in place editing. It already hosts over 7000 educational modules in areas ranging from Fourier analysis, signal processing, statistics and physics to music theory. We have chosen Connexions as the platform for the Open Education Cup in order to have a convenient, scalable and reusable central repository for all the modules submitted.</para><para id="element-82">The purpose of this competition is to jump-start an OER repository, using the Connexions platform, on High Performance Computing (HPC) and parallel computing. We think that, by offering modest inducements (monetary prizes, publications, and fame), we can quickly collect a wide variety of modules to teach parallel computing. By using Connexions tools to publish and host these Open Educational Resources, they will be freely available (published under the Creative Commons attribution license) to the students, professors, and teachers who most need them. Instructors and teachers can then choose their preferred sets of existing modules sometimes enhanced by personally authored content, thus creating a variety of courses that are engaging, comprehensive, constantly updated, and customized to their students needs. The OER repository Connexions also support translation of modules into multiple languages. While the contest entries <emphasis>must be in English</emphasis> we encourage authors to support language translations. In the long term, such an OER repository and the collaborative courses in it can form the foundation for a new way of teaching computer and computational science. This is admittedly a grand vision, but it is imperative that we start now to build core material for the coming wave of new computational learning.</para>
+
+</section><section id="id6341259">
+        <title>Contest Rules</title>
+        <para id="id6341266">To be considered for the contest, prospective authors are required to submit entries that adhere to the following guidelines:</para>
+        
+        <list id="id9061163" list-type="bulleted"><item>Prepare/author <emphasis>original</emphasis> content in <emphasis>English</emphasis> in one of the following five (5) contest categories:
+
+<list id="categories" list-type="labeled-item"><item><label>Parallel Architectures</label> Descriptions of parallel computers and how they operate, including particular systems (e.g. multicore chips) and general design principles (e.g. building interconnection networks).
+</item>
+
+<item><label>Parallel Programming Models and Languages</label> Abstractions of parallel computers useful for programming them efficiently, including both machine models (e.g. PRAM or LogP) and languages or extensions (e.g. OpenMP or MPI).  
+
+</item>
+
+<item><label>Parallel Algorithms and Applications</label> Methods of solving problems on parallel computers, from basic computations (e.g. parallel FFT or sorting algorithms) to full systems (e.g. parallel databases or seismic processing). 
+
+</item>
+
+<item><label>Parallel Software Tools</label> Tools for understanding and improving parallel programs, including parallel debuggers (e.g. <link url="http://www.totalviewtech.com">TotalView</link>) and performance analyzers (e.g. <link url="http://hpctoolkit.org/">HPCtoolkit</link> and <link url="http://www.cs.uoregon.edu/research/tau/home.php">TAU Performance System</link>).
+
+</item>
+
+<item><label>Accelerated Computing</label> Hardware and associated software can add parallel performance to more conventional systems, from Graphics Processing Units (GPUs) to Field Programmable Gate Arrays (FPGAs) to Application-Specific Integrated Circuits (ASICs) to innovative special-purpose hardware. 
+
+</item>
+</list>
+
+</item>
+
+<item>Derived modules (i.e., creating a new module from a previously published module) will only be considered if the module is derived from your own previously published Connexions module. Modules derived from existing Connexions modules written by other authors, while generally encouraged in an open educational repository, will not be accepted in the contest. Co-authored modules are, however, permitted.</item>
+
+<item>The content, related to one of the subject areas, <emphasis>must be published</emphasis> in Connexions. The author must not only upload a draft copy of the module into Connexions, but must go through the final step of publishing the module (agreeing to the Creative Commons open licensing terms adopted by Connexions) before the posted deadline. For additional information about each of the subject areas of the contest see the module Parallel Computing by Charles Koelbel.</item>
+
+<item>A single module can only be judged in one of the categories and it is the responsibility of the author to select the most appropriate category (authors must select the category in the web form discussed below). Modules sent to multiple categories will only be judged in the first category to which they are submitted.</item>
+
+<item>Authors are free to update the modules after the deadline and we encourage this. However, only the version that was current as of the posted deadline will be judged. Connexions allows access to time-stamped versions of modules so it is possible to judge the submitted version even as updates are being made.</item>
+
+<item>For a module to be considered in the contest, the author must also fill out and submit the form entitled “Submit Module” linked from the Open Education Cup web page at <link url="http://openeducationcup.org/submitform.html">http://openeducationcup.org/submitform.html</link>. The Submit Module form must be completed after the module is published in Connexions because the URL assigned to it is not permanent until that time. Updates to a module after the first version has been published will maintain the same module number, only the version number and time stamp will be updated.</item>
+
+<item>An individual author may, and is strongly encouraged to, submit more than one module. However, the same module may only be submitted to one content category. The author may submit multiple modules to the same content categories and/or submit modules to multiple content categories. Please see the Contest Award section for award descriptions and limitations.</item>
+
+<item>Entries MUST be submitted (both the published module in Connexions and Submit Module web form) on or before 5 p.m. (US central time zone) Monday, February 2, 2009.</item></list><para id="element-434">For a complete and final listing of all the contest rules for the Open Education Cup go to <link url="http://OpenEducationCup.org">http://OpenEducationCup.org</link>.</para>
+      </section>
+      <section id="element-685"><title>Contest Awards</title>
+<para id="element-242">A panel of experts in high performance computing and parallel programming will be named to serve as judges for the contest. Each module will be reviewed by at least three impartial judges. The judges select one in each of the five (5) subject categories (as defined in the Contest Rules section) as the <emphasis>Best</emphasis> module, resulting in five (5) Best module awards total. In addition the judges can select any number of entries for the distinction of <emphasis>Honorable Mention</emphasis>. Judging criteria will be posted at the Open Education Cup web page.</para><para id="element-425">In each category, there will be a first prize of $500. At the judges’ discretion, other modules in the category may be identified for Honorable Mention. An on-line collection, which may be printed as a book, will highlight all modules that received either recognition.</para><para id="element-512">Thanks to the generous support from our sponsors (BP, Chevron, Connexions, NVIDIA, Rice, Sun Microsystems, Total S.A. and WesternGeco), we 
+will be awarding prizes to contest winners according to the following guidelines:  
+
+<list id="id6327578" list-type="bulleted"><item>Each of the five (5) modules selected as Best will receive a 
+prize in the amount of US $500.</item>
+
+<item>A contestant may only receive <emphasis>one</emphasis> prize in 
+the category <emphasis>Best</emphasis>.</item>
+
+<item>A contestant may be nominated for and receive more than one 
+<emphasis>Honorable Mention</emphasis>. </item>
+
+<item>A module with multiple authors must designate one author as the lead author. If a module with multiple authors is selected to receives one of the prizes the organizer will issue the prize to the lead author. It is the <emphasis>sole responsibility</emphasis> of the lead author in collaboration with the co-authors to agree on how to divide the prize.</item>
+ 
+<item>A Connexions collection (book) containing all the modules given 
+the distinction Best and Honorable Mention will be created and made available in 
+the Connexions repository after the end of the contest.</item>
+
+<item>All awards will be publicized on the Open Education Cup contest website, through the published collection referenced above, open education conferences, appropriate HPC conferences focused on education and content creation and other promotional materials.</item>
+        </list></para></section><section id="id8963972"><title>Judging Criteria</title>
+        
+        
+        
+        <para id="element-428">A panel of distinguished parallel computing experts from academia and industry will read and judge all modules. Modules within a category will only be compared against other modules in the same category (e.g. Parallel Architecture modules will <emphasis>not</emphasis> be compared to Parallel Software Tools modules). The primary judging criteria will be:</para><list id="element-112" list-type="bulleted"><item><emphasis>Appropriateness:</emphasis> The module should be relevant to the category in which it is entered, as well as to parallel computing generally. Its topic should be considered of some importance in the field, though it need not be “the” central concept.</item>
+
+<item><emphasis>Correctness:</emphasis> The module should be technically accurate and cite external references where appropriate. Where there is controversy in a field, it may take a particular stand. However, it should note where there are significant differences with other sources.</item>
+
+<item><emphasis>Clarity:</emphasis> The module should be easy for a learner to understand. Where appropriate, it should note any prerequisite knowledge. A module may target any audience from elementary school to graduate student.</item>
+
+<item><emphasis>Presentation:</emphasis> The module should make good use of formatting and auxiliary files. It need not use every feature of Connexions (e.g. bibliographies, graphics support, equations), but where a feature is used it should be attractive (e.g. clearly legible figures). Creative use of multimedia enhancements of the material is encouraged.</item></list></section>
+      <section id="id9060868"><title>What is a module?</title>
+        
+        <para id="id9060874">There is no hard and fast definition of the length or size of a module; it could be half a page of text or it could be the equivalent of 10 or more pages of text. Somewhere in the middle is most likely -- 3-6 pages. You can think of the proper length as that which is needed to treat a concept in sufficient detail so someone can read it and make sense of it. If the module depends on the understanding of other concepts, these should generally not be treated in your module but you can assume will be treated in a separate module. For the purpose of this contest you can assume that pre-requisites exist and the judges will not be judging you on whether or not the pre-requisites exist at the time you write your module. Over time these pre-requisite modules will be written, either by you or others.</para>
+      </section>
+      
+      <section id="id8962535">
+        <title>Submitting Content</title>
+        <para id="id8962541">Open Education Cup participants are strongly encouraged to publish their modules well ahead of the submission deadline. Authors new to Connexions may need time to learn and adjust to the authoring interface as well as the features and options provided by the CNXML language, and those wishing to upload Word, OpenOffice Writer, or LaTeX documents will also need time to prepare those files using the importer templates provided as well as perform post-import edits as necessary.  By starting the authoring and publication process early, contest participants will ensure that they have the time to work through any difficulties and the opportunity to contact Connexions for additional support as necessary.</para>
+        <para id="element-872">Authors are strongly encouraged to include relevant information such as bibliography, glossary, links to prerequisite material, and related links. If you have any questions regarding the authoring process, or if you experience any trouble publishing your contest entries, please do not hesitate to contact Jonathan Emmons, Connexions' community development specialist, at <link url="mailto:cnx@cnx.org">cnx@cnx.org</link> for assistance.  Connexions will be offering a series of web-training sessions for those interested, and will be available for individual support as necessary.  Again, participants are strongly encouraged to begin the authoring and publication process early in order to identify barriers and request assistance in a timely manner.</para><para id="element-307">To enter a module in the contest, authors MUST complete BOTH of the following steps (in the order specified):
+<list id="submittmodule" list-type="enumerated"><item>Publish the module in Connexions</item>
+<item>Fill out and submit the "Submit Module" form at <link url="http://openeducationcup.org/submitform.html">http://openeducationcup.org/submitform.html</link></item>
+</list>
+Modules must be published once before they can be submitted to the contest (though authors may continue to update their Connexions modules after entering the contest).  Only URLs for published modules (of the form http://cnx.org/content/[moduleID]/latest/) will be accepted; URLs to modules in workgroups or workspaces are not publicly viewable and will not be considered valid entries.</para>
+
+
+
+      </section>
+<section id="element-400"><title>Getting Started</title>
+<para id="element-775">For a quick start on creating a Connexions module visit the Create a Module in Minutes tutorial at <link url="http://cnx.org/help/ModuleInMinutes">http://cnx.org/help/ModuleInMinutes</link> or visit the New Author Guide at <link document="col10404">http://cnx.org/content/col10404/latest/</link> for a short course to get stated using Connexions. For a more detailed description of Connexions take a look at the Connexions Tutorial and Reference material at <link document="col10151">http://cnx.org/content/col10151/latest/</link>. We also strongly encourage you to review the module on Importing and Exporting at <link url="http://cnx.org/help/ImportAndExport">http://cnx.org/help/ImportAndExport</link> to get up to speed on the most effective way of authoring new content or 
+leveraging content that you may already have written in Word or LaTeX and want to make available in Connexions.</para><para id="element-475">A number of modules have been include as a resource that you may find useful as you prepare your contest entry, including:
+<list id="additionalresources" list-type="bulleted">
+<item>The chapter Parallel Computing by Charles Koelbel provides a solid framework for the envisioned collection of modules.</item>
+
+<item>Resources, help pages, and tutorials for Connexions authors.</item>
+
+<item>Exemplar modules that illustrate how to leverage Connexions to produce high-quality educational materials.</item>
+</list>
+
+Even though most of the example modules we have chosen to include in this book do not relate directly to the topic of high performance computing and parallel computing, we hope that the modules included in this collection will help stimulate ideas for what might be possible as well as give you the opportunity to see how modules are rendered both in print as well as online. We strongly encourage authors to maximally leverage the repositories ability to support dynamic multimedia content. Research shows that the education and learning experience can be significantly enhanced if the learner has access to material that stimulates more than one learning style (e.g., visual, auditory, reading/writing-preference or kinesthetic or tactile).</para></section><section id="element-386"><title>Sponsor Recognition</title><para id="element-574">
+Finally we want to thank all the sponsors for their generous support. Without the support of BP, Chevron, Connexions, NVIDIA, Rice, Sun Microsystems, Total S.A., and WesternGeco we would not have been able to kick-start the Open Education Cup at SC08 in Austin, Texas. Without the interest of our sponsors and that of the community for advancing our ability to educate and train the next generation employees we could not have brought you this opportunity. Please make sure you thank each of our sponsors when you meet them at SC08.
+</para>
+<para id="logowrapper"><media id="idp3757648" alt="A set of logos of the competition sponsors: BP, Chevron, Connexions, NVIDIA, Rice, Sun Microsystems, Total S.A., and WesternGeco"><image src="../../media/sponsors.png" mime-type="image/png" width="600" print-width="4.375in"/></media>
+</para></section>
+        <para id="id8963643"><emphasis>Happy authoring!</emphasis></para>
+  </content>
+</document>

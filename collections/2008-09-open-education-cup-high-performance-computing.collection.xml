@@ -1,0 +1,42 @@
+<col:collection xmlns="http://cnx.rice.edu/collxml" xmlns:md="http://cnx.rice.edu/mdml" xmlns:col="http://cnx.rice.edu/collxml" xml:lang="en">
+  <metadata xmlns:md="http://cnx.rice.edu/mdml" mdml-version="0.5">
+    <md:content-id>col10594</md:content-id>
+    <md:title>2008-'09 Open Education Cup: High Performance Computing</md:title>
+    <md:language>en</md:language>
+    <md:license url="http://creativecommons.org/licenses/by/2.0/">Creative Commons Attribution License</md:license>
+    <md:uuid>f37d82d1-c1da-4db4-b962-8d4e95d12275</md:uuid>
+<md:slug>2008-09-open-education-cup-high-performance-computing</md:slug>
+</metadata>
+  <col:content>
+    <col:module document="m18126"/>
+    <col:subcollection>
+      <md:title>About the Open Education Cup Contest</md:title>
+      <col:content>
+        <col:module document="m18098"/>
+        <col:module document="m18110"/>
+      </col:content>
+    </col:subcollection>
+    <col:subcollection>
+      <md:title>Book Introduction and Example Connexions Modules</md:title>
+      <col:content>
+        <col:module document="m18099"/>
+        <col:module document="m18093"/>
+        <col:subcollection>
+          <md:title>Example Connexions Modules</md:title>
+          <col:content>
+            <col:module document="m10846"/>
+            <col:module document="m16847"/>
+          </col:content>
+        </col:subcollection>
+      </col:content>
+    </col:subcollection>
+    <col:subcollection>
+      <md:title>Authoring in Connexions</md:title>
+      <col:content>
+        <col:module document="m18094"/>
+        <col:module document="m14394"/>
+        <col:module document="m14395"/>
+      </col:content>
+    </col:subcollection>
+  </col:content>
+</col:collection>

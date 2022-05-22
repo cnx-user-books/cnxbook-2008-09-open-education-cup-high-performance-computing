@@ -1,0 +1,20 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Open Education Cup: Authoring in Connexions</title>
+  <metadata><md:content-id>undefined</md:content-id><md:title/><md:uuid>d0d6fc2b-2571-4b28-b9f5-776f12d01ce2</md:uuid>
+</metadata>
+  <content>
+    <para id="id6941742">Connexions provides a number of help documents designed to assist authors looking to get started creating and editing content. These documents range from basic introductions to the Connexions platform to advanced CNXML tutorials for experienced authors wishing to take their materials to the next level.</para>
+    <para id="id6890462">Here are a few resources to help you get started:</para>
+    <list list-type="bulleted" id="id6759236">
+      <item>Connexions Help Page - <link url="http://cnx.org/help/">http://cnx.org/help/</link></item>
+      <item>Introduction to Connexions - <link document="m14206">http://cnx.org/content/m14206/latest/</link></item>
+      <item>New Author Guide - <link url="http://cnx.org/help/authorguide">http://cnx.org/help/authorguide</link></item>
+      <item>Editing Modules - <link document="m10887">http://cnx.org/content/m10887/latest/</link></item>
+      <item>Basic CNXML - <link document="m14394">http://cnx.org/content/m14394/latest/</link></item>
+      <item>Advanced CNXML - <link document="m14395">http://cnx.org/content/m14395/latest/</link></item>
+      <item>Tables in Connexions - <link document="m14396">http://cnx.org/content/m14396/latest/</link></item>
+      <item>Multimedia in Connexions - <link document="m12660">http://cnx.org/content/m12660/latest/</link></item>
+    </list>
+    <note id="idm2254640">Due to space limitations, not all of the help documents have been included in this collection.  You can view any of the documents listed at the URLs indicated above.</note><para id="id6777744">If you have any questions, please contact Jonathan Emmons, Connexions’ Community Development Specialist, at <link url="mailto:cnx@cnx.org">cnx@cnx.org</link>. </para>
+  </content>
+</document>
